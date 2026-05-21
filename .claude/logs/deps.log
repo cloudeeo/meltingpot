@@ -1,0 +1,7 @@
+2026-04-20T07:13:13Z cd frontend && npm install --no-audit --no-fund --loglevel=error 2>&1 | tail -30
+2026-04-20T09:02:40Z cd frontend && npm install world-atlas@^2.0.2 --save --no-audit --no-fund 2>&1 | tail -5
+2026-04-20T09:49:28Z cd /home/claudio/dev/confinis/medridian/frontend && npm install @tabler/icons-react cmdk @fontsource-variable/fraunces --save --no-audit --no-fund 2>&1 | tail -3
+2026-04-21T07:15:21Z cd backend && npm install --no-audit --no-fund --loglevel=error 2>&1 | tail -15
+2026-04-22T13:25:47Z cd /home/claudio/dev/confinis/medridian/backend && npm install --save jszip 2>&1 | tail -5
+2026-04-23T18:45:03Z cd /home/claudio/dev/confinis/medridian/backend && npm install --save docx 2>&1 | tail -5 && grep '"docx"' package.json
+2026-04-24T08:09:28Z cd /home/claudio/dev/confinis/medridian/backend && npm install --save @fastify/multipart pdf-parse 2>&1 | tail -3 && npm install --save-dev @types/pdf-parse 2>&1 | tail -3 && grep -E '"@fastify/multipart"|"pdf-parse"' package.json
