@@ -1,0 +1,53 @@
+---
+import { SOFT_LAUNCH } from '~/lib/launch';
+export const prerender = !SOFT_LAUNCH;
+if (SOFT_LAUNCH) return Astro.redirect('/', 302);
+
+import Base from '~/layouts/Base.astro';
+import { buildSeo } from '~/lib/seo';
+
+const seo = buildSeo({
+  path: '/about',
+  title: 'About',
+  description: 'Executive Founders is a strategic and operational advisory firm. We work with executives, founders and leadership teams to bring clarity, structure and governance to organisations navigating growth and change.',
+});
+---
+<Base seo={seo}>
+  <section class="page-hero">
+    <div class="container">
+      <p class="eyebrow">About</p>
+      <h1>We operate at leadership level, not at task level.</h1>
+      <p class="page-lede">Executive Founders is a strategic and operational advisory firm. We work with executives, founders and leadership teams to bring clarity, structure and governance to organisations navigating growth and change.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container about-grid">
+      <div class="about-content prose">
+        <h2>Who we are</h2>
+        <p>Modern organisations do not fail because of lack of vision. They fail when governance, execution and organisational alignment do not scale at the same speed as complexity.</p>
+        <p>We operate alongside leadership teams to help organisations structure transformation, coordinate execution and scale sustainably over time. Our work bridges strategy, governance and execution.</p>
+
+        <h2>How we engage</h2>
+        <p>We work through medium and long-term engagements focused on sustainable organisational evolution — not isolated deliverables. Where specialised competencies are required, we coordinate the right experts within a clear governance framework.</p>
+      </div>
+
+      <aside class="about-side">
+        <ul class="meta-list">
+          <li>
+            <h3>Our mission</h3>
+            <p>Helping organisations scale operationally with clarity, structure and sustainable governance.</p>
+          </li>
+          <li>
+            <h3>Our approach</h3>
+            <p>Advisory-led, execution-oriented partnerships at leadership level for lasting organisational impact.</p>
+          </li>
+          <li>
+            <h3>Where we focus</h3>
+            <p>Consulting & advisory, fintech & technology, digital platforms, innovation-driven businesses.</p>
+          </li>
+        </ul>
+      </aside>
+    </div>
+  </section>
+</Base>

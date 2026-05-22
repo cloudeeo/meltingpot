@@ -1,0 +1,30 @@
+---
+import { Image } from 'astro:assets';
+import { truncate } from '~/lib/format';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props { entry: CollectionEntry<'videos'>; }
+const { entry } = Astro.props;
+---
+<article class="card card-video">
+  <a class="card-media card-media-video" href={entry.data.url} target="_blank" rel="noopener">
+    {entry.data.thumbnail ? (
+      <Image src={entry.data.thumbnail} alt="" width={800} height={500} loading="lazy" />
+    ) : (
+      <span class="video-placeholder" aria-hidden="true"></span>
+    )}
+    <span class="video-play" aria-hidden="true">
+      <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" focusable="false">
+        <circle cx="24" cy="24" r="22" fill="rgba(15, 23, 42, 0.85)" />
+        <path d="M20 16l14 8-14 8z" fill="#ffffff" />
+      </svg>
+    </span>
+    {entry.data.duration && <span class="video-duration">{entry.data.duration}</span>}
+  </a>
+  <div class="card-body">
+    <h3 class="card-title">
+      <a href={entry.data.url} target="_blank" rel="noopener">{entry.data.title}</a>
+    </h3>
+    <p class="card-excerpt">{truncate(entry.data.description, 160)}</p>
+  </div>
+</article>

@@ -52,7 +52,10 @@
       "Bash(jq *)",
       "Read(//home/claudio/dev/confinis/swissdamed/deploy/**)",
       "Bash(pdftoppm -r 120 -f 41 -l 55 -png /home/claudio/dev/confinis/medridian/docs/normiq.pdf /tmp/normiq_pages/p)",
-      "Read(//tmp/normiq_pages/**)"
+      "Read(//tmp/normiq_pages/**)",
+      "Bash(ls /home/claudio/dev/ef/manif/deploy/nginx/ /home/claudio/dev/ef/manif/deploy/cron/)",
+      "Read(//home/claudio/dev/ef/manif/deploy/nginx/**)",
+      "Read(//home/claudio/dev/ef/manif/**)"
     ],
     "deny": [
       "Read(./.env)",

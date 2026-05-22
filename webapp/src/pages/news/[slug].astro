@@ -1,0 +1,62 @@
+---
+export const prerender = true;
+import { SOFT_LAUNCH } from '~/lib/launch';
+import { getCollection, render } from 'astro:content';
+import Base from '~/layouts/Base.astro';
+import { buildSeo, articleLd } from '~/lib/seo';
+import { formatDate, toIsoDate } from '~/lib/format';
+
+export async function getStaticPaths() {
+  if (SOFT_LAUNCH) return [];
+  const posts = await getCollection('posts', ({ data }) => !data.draft);
+  return posts.map((post) => ({
+    params: { slug: post.id.replace(/\.(md|mdx)$/, '') },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+const path = `/news/${post.id.replace(/\.(md|mdx)$/, '')}`;
+const seo = buildSeo({
+  path,
+  title: post.data.title,
+  description: post.data.description,
+  type: 'article',
+  publishedAt: toIsoDate(post.data.publishedAt),
+  modifiedAt: post.data.updatedAt ? toIsoDate(post.data.updatedAt) : undefined,
+  author: post.data.author,
+});
+
+const jsonLd = [
+  articleLd({
+    title: post.data.title,
+    description: post.data.description,
+    url: seo.canonical,
+    publishedAt: toIsoDate(post.data.publishedAt),
+    modifiedAt: post.data.updatedAt ? toIsoDate(post.data.updatedAt) : undefined,
+    author: post.data.author,
+  }),
+];
+---
+<Base seo={seo} jsonLd={jsonLd}>
+  <article class="single-post">
+    <header class="single-hero">
+      <div class="container">
+        <p class="eyebrow">
+          <time datetime={toIsoDate(post.data.publishedAt)}>{formatDate(post.data.publishedAt)}</time>
+          {post.data.author && <span> · {post.data.author}</span>}
+        </p>
+        <h1 class="single-title">{post.data.title}</h1>
+        <p class="single-lede">{post.data.description}</p>
+      </div>
+    </header>
+
+    <div class="container" style="padding: 24px 0 64px;">
+      <div class="prose">
+        <Content />
+      </div>
+    </div>
+  </article>
+</Base>

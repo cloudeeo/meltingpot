@@ -1,0 +1,26 @@
+---
+export const prerender = true;
+import Base from '~/layouts/Base.astro';
+import { buildSeo } from '~/lib/seo';
+import { SITE } from '~/lib/site';
+import { SOFT_LAUNCH } from '~/lib/launch';
+
+const seo = buildSeo({
+  path: '/404',
+  title: 'Page not found',
+  description: 'The page you were looking for may have moved or been retired.',
+});
+---
+<Base seo={seo}>
+  <section class="page-hero">
+    <div class="container">
+      <p class="eyebrow">Not found</p>
+      <h1>This page couldn't be located.</h1>
+      <p class="page-lede">The page you were looking for may have moved or been retired. Try returning to the homepage or get in touch.</p>
+      <div class="hero-cta" style="margin-top:24px;">
+        <a class="btn btn-primary" href="/">Back to home</a>
+        <a class="btn btn-ghost" href={SOFT_LAUNCH ? `mailto:${SITE.email}` : '/contact'}>Contact us</a>
+      </div>
+    </div>
+  </section>
+</Base>

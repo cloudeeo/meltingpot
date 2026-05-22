@@ -1,0 +1,24 @@
+---
+import { Image } from 'astro:assets';
+import { formatDate, toIsoDate, truncate } from '~/lib/format';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props { post: CollectionEntry<'posts'>; }
+const { post } = Astro.props;
+const href = `/news/${post.id.replace(/\.(md|mdx)$/, '')}`;
+---
+<article class="card card-post">
+  {post.data.cover && (
+    <a class="card-media" href={href} aria-hidden="true" tabindex="-1">
+      <Image src={post.data.cover} alt="" width={800} height={500} loading="lazy" />
+    </a>
+  )}
+  <div class="card-body">
+    <p class="card-meta">
+      <time datetime={toIsoDate(post.data.publishedAt)}>{formatDate(post.data.publishedAt)}</time>
+    </p>
+    <h3 class="card-title"><a href={href}>{post.data.title}</a></h3>
+    <p class="card-excerpt">{truncate(post.data.description, 160)}</p>
+    <p class="card-link"><a href={href}>Read article →</a></p>
+  </div>
+</article>

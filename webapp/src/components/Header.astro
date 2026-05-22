@@ -1,0 +1,86 @@
+---
+import LogoMark from './LogoMark.astro';
+import { SITE } from '~/lib/site';
+
+const pathname = Astro.url.pathname.replace(/\/$/, '') || '/';
+const isCurrent = (href: string) => {
+  if (href === '/') return pathname === '/';
+  return pathname === href || pathname.startsWith(`${href}/`);
+};
+---
+<a class="skip-link" href="#site-main">Skip to content</a>
+
+<header class="site-header" id="site-header">
+  <div class="container header-inner">
+    <a href="/" class="site-branding" aria-label={`${SITE.name} — home`}>
+      <LogoMark size={36} />
+      <span class="logo-text">
+        <strong>{SITE.name}</strong>
+        <small>{SITE.tagline}</small>
+      </span>
+    </a>
+
+    <button class="menu-toggle" id="menu-toggle" aria-label="Toggle navigation" aria-controls="main-navigation" aria-expanded="false">
+      <span class="hamburger" aria-hidden="true"></span>
+    </button>
+
+    <nav class="main-navigation" id="main-navigation" aria-label="Primary">
+      <ul class="nav-menu">
+        {SITE.nav.map((item) => (
+          <li>
+            <a href={item.href} class={isCurrent(item.href) ? 'is-current' : ''}>{item.label}</a>
+          </li>
+        ))}
+      </ul>
+      <a class="nav-cta" href={SITE.cta.href}>{SITE.cta.label}</a>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const toggle = document.getElementById('menu-toggle');
+  const nav = document.getElementById('main-navigation');
+  const header = document.getElementById('site-header');
+
+  if (toggle && nav) {
+    toggle.addEventListener('click', () => {
+      const expanded = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', String(!expanded));
+      nav.classList.toggle('is-open');
+      document.body.style.overflow = !expanded ? 'hidden' : '';
+    });
+
+    nav.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => {
+        if (nav.classList.contains('is-open')) {
+          nav.classList.remove('is-open');
+          toggle.setAttribute('aria-expanded', 'false');
+          document.body.style.overflow = '';
+        }
+      });
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && nav.classList.contains('is-open')) {
+        nav.classList.remove('is-open');
+        toggle.setAttribute('aria-expanded', 'false');
+        toggle.focus();
+        document.body.style.overflow = '';
+      }
+    });
+  }
+
+  if (header) {
+    let ticking = false;
+    const update = () => {
+      header.classList.toggle('is-scrolled', window.scrollY > 32);
+      ticking = false;
+    };
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        window.requestAnimationFrame(update);
+        ticking = true;
+      }
+    }, { passive: true });
+  }
+</script>

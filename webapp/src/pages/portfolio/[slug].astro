@@ -1,0 +1,45 @@
+---
+export const prerender = true;
+import { SOFT_LAUNCH } from '~/lib/launch';
+import { getCollection, render } from 'astro:content';
+import Base from '~/layouts/Base.astro';
+import { buildSeo } from '~/lib/seo';
+
+export async function getStaticPaths() {
+  if (SOFT_LAUNCH) return [];
+  const entries = await getCollection('caseStudies', ({ data }) => !data.draft);
+  return entries.map((entry) => ({
+    params: { slug: entry.id.replace(/\.(md|mdx)$/, '') },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+const seo = buildSeo({
+  path: `/portfolio/${entry.id.replace(/\.(md|mdx)$/, '')}`,
+  title: entry.data.title,
+  description: entry.data.description,
+  type: 'article',
+});
+---
+<Base seo={seo}>
+  <section class="single-hero">
+    <div class="container">
+      <p class="eyebrow">
+        {entry.data.sector ?? 'Case study'}
+        {entry.data.year && <span> · {entry.data.year}</span>}
+      </p>
+      <h1 class="single-title">{entry.data.title}</h1>
+      <p class="single-lede">{entry.data.description}</p>
+      {entry.data.client && <p class="card-client">{entry.data.client}</p>}
+    </div>
+  </section>
+
+  <section class="container" style="padding: 24px 0 64px;">
+    <div class="prose">
+      <Content />
+    </div>
+  </section>
+</Base>

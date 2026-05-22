@@ -1,0 +1,26 @@
+---
+import { Image } from 'astro:assets';
+import { truncate } from '~/lib/format';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props { entry: CollectionEntry<'caseStudies'>; }
+const { entry } = Astro.props;
+const href = `/portfolio/${entry.id.replace(/\.(md|mdx)$/, '')}`;
+---
+<article class="card card-case">
+  {entry.data.cover && (
+    <a class="card-media" href={href} aria-hidden="true" tabindex="-1">
+      <Image src={entry.data.cover} alt="" width={800} height={500} loading="lazy" />
+    </a>
+  )}
+  <div class="card-body">
+    <p class="card-meta">
+      {entry.data.sector && <span class="card-tag">{entry.data.sector}</span>}
+      {entry.data.year && <span>{entry.data.year}</span>}
+    </p>
+    <h3 class="card-title"><a href={href}>{entry.data.title}</a></h3>
+    {entry.data.client && <p class="card-client">{entry.data.client}</p>}
+    <p class="card-excerpt">{truncate(entry.data.description, 180)}</p>
+    <p class="card-link"><a href={href}>Read engagement →</a></p>
+  </div>
+</article>

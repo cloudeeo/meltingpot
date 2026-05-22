@@ -1,0 +1,49 @@
+---
+import LogoMark from './LogoMark.astro';
+import { SITE } from '~/lib/site';
+const year = new Date().getFullYear();
+const socials = [
+  { label: 'LinkedIn', href: SITE.social.linkedin },
+  { label: 'YouTube', href: SITE.social.youtube },
+  { label: 'X / Twitter', href: SITE.social.twitter },
+].filter((s) => s.href);
+---
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <LogoMark size={32} />
+      <div class="footer-brand-text">
+        <strong>{SITE.name}</strong>
+        <p>Governance, strategic advisory and operational leadership for modern organisations.</p>
+      </div>
+    </div>
+
+    <div>
+      <h2 class="footer-heading">Explore</h2>
+      <ul class="footer-menu">
+        {SITE.nav.map((item) => (
+          <li><a href={item.href}>{item.label}</a></li>
+        ))}
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="footer-heading">Contact</h2>
+      <ul class="footer-menu">
+        <li><a href={`mailto:${SITE.email}`}>{SITE.email}</a></li>
+      </ul>
+      {socials.length > 0 && (
+        <ul class="footer-social" aria-label="Social links">
+          {socials.map((s) => (
+            <li><a href={s.href} target="_blank" rel="me noopener">{s.label}</a></li>
+          ))}
+        </ul>
+      )}
+    </div>
+  </div>
+
+  <div class="container footer-base">
+    <p>&copy; {year} {SITE.name}. All rights reserved.</p>
+    <p class="footer-tag">We operate at leadership level, not at task level.</p>
+  </div>
+</footer>

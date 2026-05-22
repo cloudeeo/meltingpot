@@ -1,0 +1,13 @@
+node_modules
+dist
+.astro
+.git
+.env
+.env.local
+.env.production
+.specstory
+.claude
+.vscode
+deploy/scripts
+*.md
+.DS_Store

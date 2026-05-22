@@ -1,0 +1,119 @@
+---
+import { SOFT_LAUNCH } from '~/lib/launch';
+export const prerender = !SOFT_LAUNCH;
+if (SOFT_LAUNCH) return Astro.redirect('/', 302);
+
+import Base from '~/layouts/Base.astro';
+import { buildSeo } from '~/lib/seo';
+import { SITE } from '~/lib/site';
+
+const seo = buildSeo({
+  path: '/contact',
+  title: 'Contact',
+  description: 'Tell us about your organisation, the moment you are in, and what you would like to achieve. We will respond personally to discuss whether a structured engagement makes sense.',
+});
+---
+<Base seo={seo}>
+  <section class="page-hero">
+    <div class="container">
+      <p class="eyebrow">Contact</p>
+      <h1>Start a conversation</h1>
+      <p class="page-lede">Tell us about your organisation, the moment you are in, and what you would like to achieve. We will respond personally to discuss whether a structured engagement makes sense.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container contact-grid">
+      <div class="contact-form-wrap">
+        <div id="form-feedback" hidden></div>
+        <form class="contact-form" id="contact-form" method="post" action="/api/contact" novalidate>
+          <div class="form-row">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" required autocomplete="name" maxlength="200" />
+          </div>
+          <div class="form-row">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required autocomplete="email" maxlength="320" />
+          </div>
+          <div class="form-row">
+            <label for="organisation">Organisation & role</label>
+            <input type="text" id="organisation" name="organisation" autocomplete="organization" maxlength="200" />
+          </div>
+          <div class="form-row">
+            <label for="topic">Area of interest</label>
+            <select id="topic" name="topic">
+              <option value="">Please choose…</option>
+              <option value="strategic-advisory">Strategic Advisory</option>
+              <option value="governance">Governance & Operational Leadership</option>
+              <option value="pmo">PMO & Programme Governance</option>
+              <option value="scaling">Organisational Scaling</option>
+              <option value="ai-governance">AI Governance & Adoption</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <label for="message">What would you like to discuss?</label>
+            <textarea id="message" name="message" rows="5" required maxlength="5000"></textarea>
+          </div>
+          {/* Honeypot — hidden from humans, bots fill it. */}
+          <div class="form-row" aria-hidden="true" style="position:absolute;left:-9999px;">
+            <label for="company_url">Company URL</label>
+            <input type="text" id="company_url" name="company_url" tabindex="-1" autocomplete="off" />
+          </div>
+          <button type="submit" class="btn btn-primary">Send message</button>
+          <p class="form-note">We treat every message confidentially. We respond within two working days.</p>
+        </form>
+      </div>
+
+      <aside class="contact-side">
+        <h2>Get in touch</h2>
+        <ul class="meta-list">
+          <li>
+            <h3>Email</h3>
+            <p><a href={`mailto:${SITE.email}`}>{SITE.email}</a></p>
+          </li>
+          <li>
+            <h3>What to expect</h3>
+            <p>We respond within two working days with proposed next steps or a short call to scope the engagement.</p>
+          </li>
+        </ul>
+      </aside>
+    </div>
+  </section>
+
+  <script>
+    const form = document.getElementById('contact-form') as HTMLFormElement | null;
+    const feedback = document.getElementById('form-feedback');
+    if (form && feedback) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        feedback.hidden = false;
+        feedback.className = '';
+        feedback.textContent = 'Sending…';
+
+        const formData = new FormData(form);
+        const payload = Object.fromEntries(formData.entries());
+
+        try {
+          const res = await fetch('/api/contact', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+          const json = await res.json().catch(() => ({}));
+          if (res.ok) {
+            feedback.className = 'form-success';
+            feedback.textContent = 'Thanks — we received your message and will reply shortly.';
+            form.reset();
+          } else {
+            feedback.className = 'form-error';
+            feedback.textContent = json.error ?? 'Something went wrong. Please try again or email us directly.';
+          }
+        } catch {
+          feedback.className = 'form-error';
+          feedback.textContent = 'Network error. Please try again or email us directly.';
+        }
+      });
+    }
+  </script>
+</Base>

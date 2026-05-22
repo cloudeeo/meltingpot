@@ -1,0 +1,46 @@
+---
+import { SOFT_LAUNCH } from '~/lib/launch';
+export const prerender = !SOFT_LAUNCH;
+if (SOFT_LAUNCH) return Astro.redirect('/', 302);
+
+import Base from '~/layouts/Base.astro';
+import CardCaseStudy from '~/components/CardCaseStudy.astro';
+import { buildSeo } from '~/lib/seo';
+import { getCollection } from 'astro:content';
+
+const seo = buildSeo({
+  path: '/portfolio',
+  title: 'Portfolio',
+  description: 'Selected engagements — governance redesigns, transformation programmes and scaling initiatives across consulting, fintech, technology and digital platforms.',
+});
+
+const items = (await getCollection('caseStudies', ({ data }) => !data.draft))
+  .sort((a, b) => a.data.order - b.data.order);
+---
+<Base seo={seo}>
+  <section class="page-hero">
+    <div class="container">
+      <p class="eyebrow">Portfolio</p>
+      <h1>Selected engagements</h1>
+      <p class="page-lede">A view into the organisations we partner with — governance redesigns, transformation programmes and scaling initiatives across consulting, fintech, technology and digital platforms.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      {items.length > 0 ? (
+        <ul class="card-grid card-grid-2">
+          {items.map((entry) => (
+            <li><CardCaseStudy entry={entry} /></li>
+          ))}
+        </ul>
+      ) : (
+        <div class="empty-state empty-state-callout">
+          <h2>Case studies coming soon</h2>
+          <p>We are preparing a curated selection of engagements to share publicly. In the meantime, we are happy to discuss relevant references on a confidential basis.</p>
+          <a class="btn btn-primary" href="/contact">Request references</a>
+        </div>
+      )}
+    </div>
+  </section>
+</Base>

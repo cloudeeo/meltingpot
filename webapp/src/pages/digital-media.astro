@@ -1,0 +1,46 @@
+---
+import { SOFT_LAUNCH } from '~/lib/launch';
+export const prerender = !SOFT_LAUNCH;
+if (SOFT_LAUNCH) return Astro.redirect('/', 302);
+
+import Base from '~/layouts/Base.astro';
+import CardVideo from '~/components/CardVideo.astro';
+import { buildSeo } from '~/lib/seo';
+import { getCollection } from 'astro:content';
+
+const seo = buildSeo({
+  path: '/digital-media',
+  title: 'Digital Media',
+  description: 'Short-form videos, talks and interviews on the operational realities of scaling, governance gaps, transformation pressure and AI adoption.',
+});
+
+const videos = (await getCollection('videos', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
+---
+<Base seo={seo}>
+  <section class="page-hero">
+    <div class="container">
+      <p class="eyebrow">Digital Media</p>
+      <h1>Conversations on governance and transformation</h1>
+      <p class="page-lede">Short-form videos, talks and interviews on the operational realities of scaling, governance gaps, transformation pressure and AI adoption.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      {videos.length > 0 ? (
+        <ul class="video-grid">
+          {videos.map((entry) => (
+            <li><CardVideo entry={entry} /></li>
+          ))}
+        </ul>
+      ) : (
+        <div class="empty-state empty-state-callout">
+          <h2>Videos coming soon</h2>
+          <p>We are producing a library of short-form videos on governance, transformation and AI adoption.</p>
+          <a class="btn btn-primary" href="/contact">Stay informed</a>
+        </div>
+      )}
+    </div>
+  </section>
+</Base>

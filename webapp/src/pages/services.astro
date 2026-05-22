@@ -1,0 +1,104 @@
+---
+import { SOFT_LAUNCH } from '~/lib/launch';
+export const prerender = !SOFT_LAUNCH;
+if (SOFT_LAUNCH) return Astro.redirect('/', 302);
+
+import Base from '~/layouts/Base.astro';
+import Icon from '~/components/Icon.astro';
+import { buildSeo } from '~/lib/seo';
+
+const seo = buildSeo({
+  path: '/services',
+  title: 'Services',
+  description: 'Strategic advisory, governance, PMO, organisational scaling and AI governance — the five areas where Executive Founders creates lasting organisational impact.',
+});
+
+const services = [
+  {
+    icon: 'advisory',
+    title: 'Strategic Advisory',
+    body: 'We work alongside executives and founders to navigate inflection points — clarifying priorities, sharpening strategic options and supporting decision-making with structure and discipline.',
+    bullets: [
+      'Leadership team coaching and decision support',
+      'Strategic prioritisation and roadmap design',
+      'Board and investor preparation',
+    ],
+  },
+  {
+    icon: 'governance',
+    title: 'Governance & Operational Leadership',
+    body: 'We help organisations structure accountability and decision-making — designing governance models that match the complexity of the business and the pace of change.',
+    bullets: [
+      'Governance model design and operating rhythm',
+      'RACI / decision rights frameworks',
+      'Interim operational leadership',
+    ],
+  },
+  {
+    icon: 'pmo',
+    title: 'PMO & Programme Governance',
+    body: 'We coordinate execution across initiatives — establishing programme governance, transparent reporting and the operating cadence required to move at scale.',
+    bullets: [
+      'Strategic PMO set-up and uplift',
+      'Portfolio prioritisation and dependency management',
+      'Programme delivery oversight',
+    ],
+  },
+  {
+    icon: 'scale',
+    title: 'Organisational Scaling',
+    body: 'We build structures that grow with the business — designing operating models, role architecture and processes that absorb complexity instead of breaking under it.',
+    bullets: [
+      'Target operating model design',
+      'Org design and leadership team architecture',
+      'Process and workflow standardisation',
+    ],
+  },
+  {
+    icon: 'ai',
+    title: 'AI Governance & Adoption',
+    body: 'We govern AI integration responsibly — structuring ownership, risk management and adoption frameworks so AI scales sustainably across the organisation.',
+    bullets: [
+      'AI governance and policy frameworks',
+      'Shadow-AI assessment and remediation',
+      'Responsible AI adoption roadmap',
+    ],
+  },
+] as const;
+---
+<Base seo={seo}>
+  <section class="page-hero">
+    <div class="container">
+      <p class="eyebrow">What we do</p>
+      <h1>Strategic advisory, governance and operational leadership</h1>
+      <p class="page-lede">We design and steer the structures that turn strategy into execution — from governance and PMO orchestration to AI adoption and organisational scaling.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <ul class="service-list service-list-detailed">
+        {services.map((s) => (
+          <li class="service-item-detailed">
+            <header class="service-item-header">
+              <span class="service-icon" aria-hidden="true"><Icon name={s.icon} /></span>
+              <h2>{s.title}</h2>
+            </header>
+            <p>{s.body}</p>
+            <ul class="bullet-list">
+              {s.bullets.map((b) => <li>{b}</li>)}
+            </ul>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section-dark">
+    <div class="container closing">
+      <h2>Looking for a structured conversation about your organisation?</h2>
+      <p>We work with leadership teams through medium and long-term engagements focused on sustainable organisational evolution.</p>
+      <a class="btn btn-light" href="/contact">Get in touch</a>
+    </div>
+  </section>
+</Base>

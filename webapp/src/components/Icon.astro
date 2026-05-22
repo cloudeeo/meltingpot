@@ -1,0 +1,8 @@
+---
+import type { IconKey } from '~/lib/icons';
+import { ICONS } from '~/lib/icons';
+interface Props { name: IconKey; }
+const { name } = Astro.props;
+const svg = ICONS[name];
+---
+<Fragment set:html={svg} />

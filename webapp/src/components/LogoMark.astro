@@ -1,0 +1,8 @@
+---
+interface Props { size?: number; }
+const { size = 36 } = Astro.props;
+---
+<svg width={size} height={size} viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true">
+  <rect width="36" height="36" rx="4" fill="#E0394E"/>
+  <text x="18" y="24" text-anchor="middle" font-family="Inter, sans-serif" font-size="18" font-weight="800" fill="#ffffff">ex.</text>
+</svg>

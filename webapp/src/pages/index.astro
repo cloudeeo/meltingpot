@@ -1,0 +1,220 @@
+---
+export const prerender = true;
+import Base from '~/layouts/Base.astro';
+import Icon from '~/components/Icon.astro';
+import CardPost from '~/components/CardPost.astro';
+import { buildSeo } from '~/lib/seo';
+import { getCollection } from 'astro:content';
+import { SITE } from '~/lib/site';
+import { SOFT_LAUNCH } from '~/lib/launch';
+
+const seo = buildSeo({ path: '/', description: SITE.description });
+
+const approach = [
+  { title: 'Organisational Growth',     body: 'Scaling structures and teams without losing operational coherence.' },
+  { title: 'Operational Complexity',    body: 'Reducing friction and improving alignment across functions.' },
+  { title: 'Strategic Transformation',  body: 'Structuring and guiding change initiatives from strategy to execution.' },
+  { title: 'Leadership Alignment',      body: 'Coordinating decision-making and execution at leadership level.' },
+];
+
+const services = [
+  { icon: 'advisory',   title: 'Strategic Advisory',                  body: 'Guiding leadership through complexity and change.' },
+  { icon: 'governance', title: 'Governance & Operational Leadership', body: 'Structuring accountability and decision-making.' },
+  { icon: 'pmo',        title: 'PMO & Programme Governance',          body: 'Coordinating execution across initiatives.' },
+  { icon: 'scale',      title: 'Organisational Scaling',              body: 'Building structures that grow with the business.' },
+  { icon: 'ai',         title: 'AI Governance & Adoption',            body: 'Governing AI integration responsibly.' },
+] as const;
+
+const situations = [
+  { title: 'Scaling Complexity',     body: 'Growth generates operational friction, misalignment and execution bottlenecks that existing structures cannot absorb.' },
+  { title: 'Leadership Overload',    body: 'Executives and leadership teams become central decision points for operational coordination, limiting strategic focus.' },
+  { title: 'Fragmented Execution',   body: 'Teams, priorities and initiatives lose alignment and operational consistency across the organisation.' },
+  { title: 'Transformation Pressure',body: 'Organisations struggle to evolve operationally while continuing to deliver on existing commitments.' },
+  { title: 'Governance Gaps',        body: 'Responsibilities, accountability and decision-making structures become unclear as the organisation grows.' },
+];
+
+const sectors = [
+  { title: 'Consulting & Advisory',         body: 'Supporting advisory-led organisations in structuring governance and scaling operational models.' },
+  { title: 'Fintech & Technology',          body: 'Guiding fast-growth technology and fintech businesses through operational complexity and transformation.' },
+  { title: 'Digital Platforms',             body: 'Structuring programme governance and execution coordination for digital-first organisations.' },
+  { title: 'Innovation-Driven Businesses',  body: 'Helping innovation-led companies align leadership, scale operations and govern transformation.' },
+];
+
+const latest = SOFT_LAUNCH
+  ? []
+  : (await getCollection('posts', ({ data }) => !data.draft))
+      .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())
+      .slice(0, 3);
+
+const primaryCtaHref = SOFT_LAUNCH ? `mailto:${SITE.email}` : '/services';
+const primaryCtaLabel = SOFT_LAUNCH ? 'Email us' : 'Explore our services';
+const secondaryCtaHref = SOFT_LAUNCH ? `mailto:${SITE.email}` : '/contact';
+const secondaryCtaLabel = SOFT_LAUNCH ? 'Start a conversation' : 'Start a conversation';
+---
+<Base seo={seo}>
+
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="container hero-inner">
+      <p class="eyebrow">{SITE.tagline}</p>
+      <h1 id="hero-title" class="hero-title">{SITE.name}</h1>
+      <p class="hero-lede">{SITE.description}</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href={primaryCtaHref}>{primaryCtaLabel}</a>
+        {!SOFT_LAUNCH && (
+          <a class="btn btn-ghost" href={secondaryCtaHref}>{secondaryCtaLabel}</a>
+        )}
+      </div>
+    </div>
+    <div class="container hero-divider" aria-hidden="true"></div>
+  </section>
+
+  <section class="section section-light" aria-labelledby="approach-title">
+    <div class="container">
+      <header class="section-head">
+        <h2 id="approach-title">Strategic advisory partners for organisations in growth and transformation</h2>
+        <p class="section-lede">Executive Founders supports companies navigating complex and evolving environments. We work alongside executives, founders and leadership teams to strengthen governance, structure transformation initiatives and create scalable operational models.</p>
+      </header>
+      <ul class="card-grid card-grid-4">
+        {approach.map((a) => (
+          <li class="card card-soft">
+            <h3>{a.title}</h3>
+            <p>{a.body}</p>
+          </li>
+        ))}
+      </ul>
+      <blockquote class="pullquote">
+        <p>Our role is to bridge strategy, governance and execution — operating at leadership level, helping organisations structure and guide transformation sustainably over time.</p>
+      </blockquote>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="services-title">
+    <div class="container">
+      <header class="section-head">
+        <h2 id="services-title">Transforming complexity into structured execution</h2>
+        <p class="section-lede">Five areas where we create lasting organisational impact.</p>
+      </header>
+      <ul class="service-list">
+        {services.map((s) => (
+          <li class="service-item">
+            <span class="service-icon" aria-hidden="true"><Icon name={s.icon} /></span>
+            <div>
+              <h3>{s.title}</h3>
+              <p>{s.body}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="model-title">
+    <div class="container split-grid">
+      <p class="eyebrow">Our model</p>
+      <h2 id="model-title">Advisory-led, execution-oriented</h2>
+      <p>Executive Founders operates alongside leadership teams as a strategic and operational advisory partner — not to replace internal teams or provide isolated operational services.</p>
+
+      <div class="dual-list">
+        <div>
+          <h3>We help organisations</h3>
+          <ul>
+            <li>Structure transformation initiatives</li>
+            <li>Strengthen governance</li>
+            <li>Coordinate execution</li>
+            <li>Align teams and priorities</li>
+            <li>Guide organisational change</li>
+            <li>Accelerate decision-making</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Our role is to</h3>
+          <ul>
+            <li>Provide direction</li>
+            <li>Create operational structure</li>
+            <li>Orchestrate execution</li>
+            <li>Coordinate the right expertise when needed</li>
+            <li>Move initiatives effectively from strategy to execution</li>
+          </ul>
+        </div>
+      </div>
+
+      <p class="callout callout-info">We work closely with decision-makers through medium and long-term engagements focused on sustainable organisational evolution.</p>
+    </div>
+  </section>
+
+  <section class="section section-light" aria-labelledby="situations-title">
+    <div class="container">
+      <header class="section-head">
+        <h2 id="situations-title">Typical situations where we create value</h2>
+        <p class="section-lede">Organisations reach a point where complexity outpaces their existing structures. These are the moments where Executive Founders creates the most impact.</p>
+      </header>
+      <ul class="card-grid card-grid-3">
+        {situations.map((s) => (
+          <li class="card card-accent">
+            <h3>{s.title}</h3>
+            <p>{s.body}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="ai-title">
+    <div class="container">
+      <p class="eyebrow">AI Governance</p>
+      <h2 id="ai-title">AI is not only a technology shift — it is an organisational transformation challenge.</h2>
+      <p class="section-lede">Most organisations adopt AI without a governance framework — creating shadow AI practices, fragmented adoption, unclear ownership and compliance risks.</p>
+
+      <ul class="card-grid card-grid-3" style="margin-top:32px">
+        <li class="card card-outline"><h3>AI Governance Models</h3><p>Structuring ownership, accountability and oversight.</p></li>
+        <li class="card card-outline"><h3>Adoption Frameworks</h3><p>Guiding responsible AI integration across the organisation.</p></li>
+        <li class="card card-outline"><h3>Risk & Compliance</h3><p>Managing shadow AI, data exposure and operational inconsistency.</p></li>
+      </ul>
+
+      <p class="callout callout-strong">We believe the real challenge is not how organisations use AI. The real challenge is how organisations implement, govern and scale AI responsibly and sustainably.</p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="experience-title">
+    <div class="container">
+      <header class="section-head">
+        <h2 id="experience-title">Experience across growth and transformation environments</h2>
+      </header>
+      <ul class="card-grid card-grid-2">
+        {sectors.map((s) => (
+          <li class="card card-quiet">
+            <h3>{s.title}</h3>
+            <p>{s.body}</p>
+          </li>
+        ))}
+      </ul>
+      <p class="section-footnote">Typical initiatives include governance structuring, strategic programme leadership, operational transformation, PMO governance, organisational scaling, leadership alignment and execution coordination. We collaborate with specialised experts and operational partners when specific competencies are required, ensuring organisations receive the right expertise within a structured governance framework.</p>
+    </div>
+  </section>
+
+  <section class="section section-dark" aria-labelledby="closing-title">
+    <div class="container closing">
+      <h2 id="closing-title">Modern organisations do not fail because of lack of vision.</h2>
+      <p class="closing-lede">They fail when governance, execution and organisational alignment do not scale at the same speed as complexity.</p>
+      <p>Executive Founders operates alongside leadership teams to help organisations structure transformation, coordinate execution and scale sustainably over time. We provide strategic and operational advisory designed to bring clarity, alignment and governance to organisations navigating growth and change.</p>
+      <a class="btn btn-light" href={SOFT_LAUNCH ? `mailto:${SITE.email}` : '/contact'}>Discuss your situation</a>
+    </div>
+  </section>
+
+  {latest.length > 0 && (
+    <section class="section section-light" aria-labelledby="latest-title">
+      <div class="container">
+        <header class="section-head section-head-row">
+          <h2 id="latest-title">Latest insights</h2>
+          <a class="section-link" href="/news">All news →</a>
+        </header>
+        <ul class="card-grid card-grid-3">
+          {latest.map((p) => (
+            <li><CardPost post={p} /></li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+
+</Base>

@@ -1,0 +1,51 @@
+// Executive Founders — minimal Postgres schema.
+// Content (posts, case studies, videos) lives in MDX content collections.
+// This DB stores form submissions and future dynamic data.
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model ContactSubmission {
+  id           String   @id @default(uuid()) @db.Uuid
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  name         String   @db.VarChar(200)
+  email        String   @db.VarChar(320)
+  organisation String?  @db.VarChar(200)
+  topic        String?  @db.VarChar(64)
+  message      String   @db.Text
+  ipHash       String?  @map("ip_hash") @db.VarChar(64)
+  userAgent    String?  @map("user_agent") @db.VarChar(500)
+  handled      Boolean  @default(false)
+
+  @@index([createdAt])
+  @@index([handled])
+  @@map("contact_submissions")
+}
+
+model NewsletterSubscriber {
+  id           String    @id @default(uuid()) @db.Uuid
+  email        String    @unique @db.VarChar(320)
+  subscribedAt DateTime  @default(now()) @map("subscribed_at") @db.Timestamptz(6)
+  confirmedAt  DateTime? @map("confirmed_at") @db.Timestamptz(6)
+  unsubscribedAt DateTime? @map("unsubscribed_at") @db.Timestamptz(6)
+  source       String?   @db.VarChar(64)
+
+  @@index([subscribedAt])
+  @@map("newsletter_subscribers")
+}
+
+model AdminUser {
+  id           String    @id @default(uuid()) @db.Uuid
+  email        String    @unique @db.VarChar(320)
+  passwordHash String    @map("password_hash") @db.VarChar(255)
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  lastLoginAt  DateTime? @map("last_login_at") @db.Timestamptz(6)
+
+  @@map("admin_users")
+}

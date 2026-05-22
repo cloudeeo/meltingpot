@@ -1,0 +1,42 @@
+---
+import { SOFT_LAUNCH } from '~/lib/launch';
+export const prerender = !SOFT_LAUNCH;
+if (SOFT_LAUNCH) return Astro.redirect('/', 302);
+
+import Base from '~/layouts/Base.astro';
+import CardPost from '~/components/CardPost.astro';
+import { buildSeo } from '~/lib/seo';
+import { getCollection } from 'astro:content';
+
+const seo = buildSeo({
+  path: '/news',
+  title: 'News & insights',
+  description: 'Perspectives on governance, transformation, leadership and operational scaling — from engagements, not from theory.',
+});
+
+const posts = (await getCollection('posts', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
+---
+<Base seo={seo}>
+  <section class="page-hero">
+    <div class="container">
+      <p class="eyebrow">News & insights</p>
+      <h1>Perspectives from the field</h1>
+      <p class="page-lede">Articles, observations and frameworks on governance, transformation, leadership and operational scaling.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      {posts.length > 0 ? (
+        <ul class="card-grid card-grid-3">
+          {posts.map((p) => (
+            <li><CardPost post={p} /></li>
+          ))}
+        </ul>
+      ) : (
+        <p class="empty-state">No posts yet. Check back soon for updates.</p>
+      )}
+    </div>
+  </section>
+</Base>
