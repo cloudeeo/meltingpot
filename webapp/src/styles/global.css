@@ -477,7 +477,18 @@ ul, ol { color: var(--color-muted); }
 }
 .callout-info { background: #EEF4FF; color: var(--color-ink); }
 .callout-info::before { content: "ⓘ"; margin-right: 8px; color: var(--color-ink); font-weight: 700; }
-.callout-strong { background: var(--color-accent); color: #fff; font-weight: 600; }
+.callout-strong {
+  background: var(--color-accent);
+  color: #fff;
+  font-weight: 600;
+  text-align: center;
+  font-size: clamp(1.15rem, 1.6vw + 0.5rem, 1.5rem);
+  line-height: 1.45;
+  padding: clamp(28px, 4vw, 40px);
+  max-width: 880px;
+  margin-left: auto;
+  margin-right: auto;
+}
 .callout-strong p { color: #fff; }
 
 /* ==========================================================================

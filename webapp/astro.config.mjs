@@ -21,6 +21,16 @@ export default defineConfig({
   site: SITE,
   output: 'server',
   adapter: node({ mode: 'standalone' }),
+  // Passthrough image service. Sharp + pnpm 9 strict-mode native-binary
+  // approval keeps failing in Docker; we serve images at their original
+  // size/format instead of optimising them. The <Image /> component still
+  // emits proper width/height/alt/loading attributes — only AVIF/WebP
+  // conversion and responsive srcset generation are skipped. To re-enable
+  // optimisation later, drop this `image` block and ensure `sharp` is
+  // resolvable inside the build container.
+  image: {
+    service: { entrypoint: 'astro/assets/services/noop' },
+  },
   integrations: [
     mdx(),
     sitemap({
