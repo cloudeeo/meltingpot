@@ -15,7 +15,6 @@ const HIDDEN_ROUTES = [
   '/digital-media',
   '/news',
   '/about',
-  '/contact',
 ];
 
 export default defineConfig({
@@ -41,7 +40,7 @@ export default defineConfig({
     plugins: [tailwind()],
     ssr: {
       // Keep Prisma generated client out of Vite bundling.
-      external: ['@prisma/client', '@prisma/adapter-pg', 'pg', '.prisma/client'],
+      external: ['@prisma/client', '@prisma/adapter-pg', 'pg', '.prisma/client', 'nodemailer'],
     },
   },
   server: {

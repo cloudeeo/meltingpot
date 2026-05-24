@@ -2,17 +2,26 @@ import type { APIRoute } from 'astro';
 import { z } from 'zod';
 import { prisma } from '~/lib/db';
 import { hash } from '~/lib/format';
+import { sendContactNotification } from '~/lib/mail';
 
 export const prerender = false;
 
 const ContactSchema = z.object({
-  name: z.string().trim().min(1).max(200),
-  email: z.string().trim().email().max(320),
+  name: z.string().trim().min(1, 'Please tell us your name.').max(200),
+  email: z.string().trim().email('Please enter a valid email address.').max(320),
   organisation: z.string().trim().max(200).optional().or(z.literal('')),
   topic: z.string().trim().max(64).optional().or(z.literal('')),
-  message: z.string().trim().min(10).max(5000),
-  company_url: z.string().max(0).optional(), // honeypot — must be empty
+  message: z
+    .string()
+    .trim()
+    .min(5, 'Please give us at least a few words about what you would like to discuss.')
+    .max(5000, 'Please keep the message under 5000 characters.'),
 });
+
+// The honeypot is checked outside the schema so a browser autofill or
+// extension cannot reject a legitimate submission — we drop silently
+// only when the field is non-empty.
+const HONEYPOT_FIELD = 'company_url';
 
 function json(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
@@ -35,14 +44,22 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     return json({ error: 'Invalid request body.' }, 400);
   }
 
-  const parsed = ContactSchema.safeParse(payload);
-  if (!parsed.success) {
-    return json({ error: 'Some required fields are missing or invalid.' }, 400);
+  // Honeypot — drop silently if a bot filled this field. Checked before
+  // schema parse so we don't surface a validation error to a bot probe.
+  const honeypot =
+    payload && typeof payload === 'object' && HONEYPOT_FIELD in payload
+      ? String((payload as Record<string, unknown>)[HONEYPOT_FIELD] ?? '')
+      : '';
+  if (honeypot.trim().length > 0) {
+    return json({ ok: true }, 200);
   }
 
-  // Honeypot hit — pretend success, drop silently.
-  if (parsed.data.company_url) {
-    return json({ ok: true }, 200);
+  const parsed = ContactSchema.safeParse(payload);
+  if (!parsed.success) {
+    const fieldErrors = parsed.error.flatten().fieldErrors;
+    const firstFieldError = Object.entries(fieldErrors).find(([, msgs]) => msgs && msgs.length > 0);
+    const message = firstFieldError?.[1]?.[0] ?? 'Some required fields are missing or invalid.';
+    return json({ error: message, fields: fieldErrors }, 400);
   }
 
   const ip = clientAddress ?? request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? '';
@@ -62,8 +79,16 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       select: { id: true, createdAt: true },
     });
 
-    // Best-effort notification email (logs to stdout in dev).
-    void notify(parsed.data).catch((err) => console.error('contact notify failed', err));
+    // Fire-and-forget delivery. The submission is already persisted, so
+    // an SMTP failure does not fail the request — we can recover from
+    // the DB row, and the response stays fast for the user.
+    void sendContactNotification({
+      name: parsed.data.name,
+      email: parsed.data.email,
+      organisation: parsed.data.organisation || null,
+      topic: parsed.data.topic || null,
+      message: parsed.data.message,
+    }).catch((err) => console.error('contact notify failed', err));
 
     return json({ ok: true, id: created.id }, 201);
   } catch (err) {
@@ -71,15 +96,3 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     return json({ error: 'We could not store your message. Please try again.' }, 500);
   }
 };
-
-async function notify(submission: z.infer<typeof ContactSchema>): Promise<void> {
-  const host = import.meta.env.SMTP_HOST;
-  const to = import.meta.env.CONTACT_NOTIFY_TO ?? import.meta.env.SMTP_FROM_EMAIL;
-  if (!host || !to) {
-    console.log('[contact]', submission.email, '—', submission.topic, '—', submission.message.slice(0, 120));
-    return;
-  }
-  // SMTP delivery is intentionally not implemented here — wire nodemailer
-  // when SMTP credentials are available. The submission is already persisted.
-  console.log('[contact] persisted, SMTP not wired yet — would notify', to);
-}

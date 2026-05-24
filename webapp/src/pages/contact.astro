@@ -1,11 +1,7 @@
 ---
-import { SOFT_LAUNCH } from '~/lib/launch';
-export const prerender = !SOFT_LAUNCH;
-if (SOFT_LAUNCH) return Astro.redirect('/', 302);
-
+export const prerender = true;
 import Base from '~/layouts/Base.astro';
 import { buildSeo } from '~/lib/seo';
-import { SITE } from '~/lib/site';
 
 const seo = buildSeo({
   path: '/contact',
@@ -53,7 +49,7 @@ const seo = buildSeo({
           </div>
           <div class="form-row">
             <label for="message">What would you like to discuss?</label>
-            <textarea id="message" name="message" rows="5" required maxlength="5000"></textarea>
+            <textarea id="message" name="message" rows="5" required minlength="5" maxlength="5000"></textarea>
           </div>
           {/* Honeypot — hidden from humans, bots fill it. */}
           <div class="form-row" aria-hidden="true" style="position:absolute;left:-9999px;">
@@ -69,12 +65,12 @@ const seo = buildSeo({
         <h2>Get in touch</h2>
         <ul class="meta-list">
           <li>
-            <h3>Email</h3>
-            <p><a href={`mailto:${SITE.email}`}>{SITE.email}</a></p>
-          </li>
-          <li>
             <h3>What to expect</h3>
             <p>We respond within two working days with proposed next steps or a short call to scope the engagement.</p>
+          </li>
+          <li>
+            <h3>Confidentiality</h3>
+            <p>Every message is treated confidentially and only seen by the partners reviewing inbound enquiries.</p>
           </li>
         </ul>
       </aside>
@@ -107,11 +103,11 @@ const seo = buildSeo({
             form.reset();
           } else {
             feedback.className = 'form-error';
-            feedback.textContent = json.error ?? 'Something went wrong. Please try again or email us directly.';
+            feedback.textContent = json.error ?? 'Something went wrong. Please try again in a moment.';
           }
         } catch {
           feedback.className = 'form-error';
-          feedback.textContent = 'Network error. Please try again or email us directly.';
+          feedback.textContent = 'Network error. Please try again in a moment.';
         }
       });
     }

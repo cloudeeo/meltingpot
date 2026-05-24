@@ -20,7 +20,6 @@ export const HIDDEN_ROUTES: readonly string[] = [
   '/digital-media',
   '/news',
   '/about',
-  '/contact',
 ];
 
 export function isHidden(path: string): boolean {

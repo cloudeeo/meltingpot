@@ -57,14 +57,16 @@ DATABASE_URL=xxxxxxxx
 # Admin / auth (reserved for future admin UI)
 JWT_SECRET=xxxxxxxx
 
-# SMTP (optional — contact form logs to stdout if unset)
-SMTP_HOST=
+# SMTP — Gmail/Workspace example. Submissions only generate email when
+# all of HOST/USER/PASSWORD/FROM_EMAIL/NOTIFY_TO are set; otherwise the
+# contact form still persists to Postgres and logs to stdout.
+SMTP_HOST=smtp.gmail.com
 SMTP_PORT=587
-SMTP_USER=
-SMTP_PASSWORD=
-SMTP_FROM_EMAIL=info@executivefounders.com
+SMTP_USER=<workspace-mailbox>@executivefounders.com
+SMTP_PASSWORD=<16-char-app-password-no-spaces>
+SMTP_FROM_EMAIL=<your-alias>@executivefounders.com
 SMTP_FROM_NAME=Executive Founders
-CONTACT_NOTIFY_TO=info@executivefounders.com
+CONTACT_NOTIFY_TO=<your-alias>@executivefounders.com
 
 # Optional spam protection
 TURNSTILE_SITE_KEY=

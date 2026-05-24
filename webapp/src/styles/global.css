@@ -715,6 +715,77 @@ ul, ol { color: var(--color-muted); }
 .footer-tag { font-style: italic; }
 
 /* ==========================================================================
+   Image band — full-width image with text overlay (used on the home page)
+   ========================================================================== */
+.image-band {
+  position: relative;
+  width: 100%;
+  height: clamp(420px, 60vh, 620px);
+  overflow: hidden;
+  isolation: isolate;
+}
+.image-band-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 50%;
+  z-index: 0;
+}
+/* Light scrim that fades from the left so dark text stays readable
+   over the sky/cityscape without obscuring the rest of the image. */
+.image-band-scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.85) 0%,
+    rgba(255, 255, 255, 0.65) 32%,
+    rgba(255, 255, 255, 0) 60%
+  );
+}
+.image-band-content {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  align-items: flex-start;
+  padding-top: clamp(40px, 8vw, 96px);
+  padding-bottom: clamp(40px, 8vw, 96px);
+}
+.image-band-text {
+  max-width: 560px;
+  color: var(--color-ink);
+}
+.image-band-text h2 {
+  color: var(--color-ink);
+  margin-bottom: 16px;
+  letter-spacing: -0.015em;
+}
+.image-band-text p {
+  color: var(--color-ink-2);
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+/* Narrow variant — for images where the uniform/light area only occupies
+   the upper-left quarter (e.g. sky over water). Tighter text column and
+   a scrim that fades out sooner so the rest of the image is visible. */
+.image-band-narrow .image-band-text {
+  max-width: 420px;
+}
+.image-band-narrow .image-band-scrim {
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0.85) 0%,
+    rgba(255, 255, 255, 0.55) 22%,
+    rgba(255, 255, 255, 0) 42%
+  );
+}
+
+/* ==========================================================================
    Responsive
    ========================================================================== */
 @media (max-width: 1024px) {
@@ -728,6 +799,18 @@ ul, ol { color: var(--color-muted); }
 }
 @media (max-width: 720px) {
   :root { --header-h: 64px; }
+
+  .image-band { height: clamp(380px, 70vh, 520px); }
+  .image-band-scrim {
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.9) 0%,
+      rgba(255, 255, 255, 0.6) 55%,
+      rgba(255, 255, 255, 0) 100%
+    );
+  }
+  .image-band-text { max-width: 100%; }
+
   .menu-toggle { display: inline-block; }
   .main-navigation {
     position: fixed;

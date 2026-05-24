@@ -50,7 +50,7 @@ export function organizationLd() {
     contactPoint: {
       '@type': 'ContactPoint',
       contactType: 'business inquiries',
-      email: SITE.email,
+      url: `${SITE.url}/contact`,
     },
   };
 }

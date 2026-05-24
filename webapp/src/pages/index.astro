@@ -3,10 +3,13 @@ export const prerender = true;
 import Base from '~/layouts/Base.astro';
 import Icon from '~/components/Icon.astro';
 import CardPost from '~/components/CardPost.astro';
+import { Image } from 'astro:assets';
+import hero01 from '~/assets/images/hero01.png';
+import hero02 from '~/assets/images/hero02.png';
 import { buildSeo } from '~/lib/seo';
 import { getCollection } from 'astro:content';
 import { SITE } from '~/lib/site';
-import { SOFT_LAUNCH } from '~/lib/launch';
+import { SOFT_LAUNCH, isHidden } from '~/lib/launch';
 
 const seo = buildSeo({ path: '/', description: SITE.description });
 
@@ -46,10 +49,12 @@ const latest = SOFT_LAUNCH
       .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())
       .slice(0, 3);
 
-const primaryCtaHref = SOFT_LAUNCH ? `mailto:${SITE.email}` : '/services';
-const primaryCtaLabel = SOFT_LAUNCH ? 'Email us' : 'Explore our services';
-const secondaryCtaHref = SOFT_LAUNCH ? `mailto:${SITE.email}` : '/contact';
-const secondaryCtaLabel = SOFT_LAUNCH ? 'Start a conversation' : 'Start a conversation';
+const contactHref = '/contact';
+
+const primaryCtaHref = isHidden('/services') ? contactHref : '/services';
+const primaryCtaLabel = isHidden('/services') ? 'Get in touch' : 'Explore our services';
+const secondaryCtaHref = contactHref;
+const secondaryCtaLabel = 'Start a conversation';
 ---
 <Base seo={seo}>
 
@@ -60,7 +65,7 @@ const secondaryCtaLabel = SOFT_LAUNCH ? 'Start a conversation' : 'Start a conver
       <p class="hero-lede">{SITE.description}</p>
       <div class="hero-cta">
         <a class="btn btn-primary" href={primaryCtaHref}>{primaryCtaLabel}</a>
-        {!SOFT_LAUNCH && (
+        {primaryCtaHref !== secondaryCtaHref && (
           <a class="btn btn-ghost" href={secondaryCtaHref}>{secondaryCtaLabel}</a>
         )}
       </div>
@@ -68,12 +73,27 @@ const secondaryCtaLabel = SOFT_LAUNCH ? 'Start a conversation' : 'Start a conver
     <div class="container hero-divider" aria-hidden="true"></div>
   </section>
 
-  <section class="section section-light" aria-labelledby="approach-title">
-    <div class="container">
-      <header class="section-head">
+  <section class="image-band" aria-labelledby="approach-title">
+    <Image
+      src={hero01}
+      alt=""
+      widths={[640, 960, 1400, 2000]}
+      sizes="100vw"
+      class="image-band-bg"
+      loading="eager"
+      fetchpriority="high"
+    />
+    <div class="image-band-scrim" aria-hidden="true"></div>
+    <div class="container image-band-content">
+      <div class="image-band-text">
         <h2 id="approach-title">Strategic advisory partners for organisations in growth and transformation</h2>
-        <p class="section-lede">Executive Founders supports companies navigating complex and evolving environments. We work alongside executives, founders and leadership teams to strengthen governance, structure transformation initiatives and create scalable operational models.</p>
-      </header>
+        <p>Executive Founders supports companies navigating complex and evolving environments. We work alongside executives, founders and leadership teams to strengthen governance, structure transformation initiatives and create scalable operational models.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-light">
+    <div class="container">
       <ul class="card-grid card-grid-4">
         {approach.map((a) => (
           <li class="card card-soft">
@@ -108,12 +128,27 @@ const secondaryCtaLabel = SOFT_LAUNCH ? 'Start a conversation' : 'Start a conver
     </div>
   </section>
 
-  <section class="section" aria-labelledby="model-title">
-    <div class="container split-grid">
-      <p class="eyebrow">Our model</p>
-      <h2 id="model-title">Advisory-led, execution-oriented</h2>
-      <p>Executive Founders operates alongside leadership teams as a strategic and operational advisory partner — not to replace internal teams or provide isolated operational services.</p>
+  <section class="image-band image-band-narrow" aria-labelledby="model-title">
+    <Image
+      src={hero02}
+      alt=""
+      widths={[640, 960, 1400, 2000]}
+      sizes="100vw"
+      class="image-band-bg"
+      loading="lazy"
+    />
+    <div class="image-band-scrim" aria-hidden="true"></div>
+    <div class="container image-band-content">
+      <div class="image-band-text">
+        <p class="eyebrow">Our model</p>
+        <h2 id="model-title">Advisory-led, execution-oriented</h2>
+        <p>Executive Founders operates alongside leadership teams as a strategic and operational advisory partner — not to replace internal teams or provide isolated operational services.</p>
+      </div>
+    </div>
+  </section>
 
+  <section class="section">
+    <div class="container split-grid">
       <div class="dual-list">
         <div>
           <h3>We help organisations</h3>
@@ -197,7 +232,7 @@ const secondaryCtaLabel = SOFT_LAUNCH ? 'Start a conversation' : 'Start a conver
       <h2 id="closing-title">Modern organisations do not fail because of lack of vision.</h2>
       <p class="closing-lede">They fail when governance, execution and organisational alignment do not scale at the same speed as complexity.</p>
       <p>Executive Founders operates alongside leadership teams to help organisations structure transformation, coordinate execution and scale sustainably over time. We provide strategic and operational advisory designed to bring clarity, alignment and governance to organisations navigating growth and change.</p>
-      <a class="btn btn-light" href={SOFT_LAUNCH ? `mailto:${SITE.email}` : '/contact'}>Discuss your situation</a>
+      <a class="btn btn-light" href={contactHref}>Discuss your situation</a>
     </div>
   </section>
 
