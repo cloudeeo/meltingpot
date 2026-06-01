@@ -13,6 +13,15 @@ const posts = defineCollection({
       cover: image().optional(),
       tags: z.array(z.string()).default([]),
       draft: z.boolean().default(false),
+      // Auto-rendered CTA box at the end of every news post.
+      // Authors set `hook` (the conditional self-recognition sentence)
+      // and optionally override the button label.
+      cta: z
+        .object({
+          hook: z.string(),
+          label: z.string().default('Tell us about your situation'),
+        })
+        .optional(),
     }),
 });
 

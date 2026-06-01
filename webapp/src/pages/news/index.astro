@@ -1,7 +1,7 @@
 ---
-import { SOFT_LAUNCH } from '~/lib/launch';
-export const prerender = !SOFT_LAUNCH;
-if (SOFT_LAUNCH) return Astro.redirect('/', 302);
+import { isHidden } from '~/lib/launch';
+export const prerender = !isHidden('/news');
+if (isHidden('/news')) return Astro.redirect('/', 302);
 
 import Base from '~/layouts/Base.astro';
 import CardPost from '~/components/CardPost.astro';

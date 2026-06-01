@@ -18,7 +18,6 @@ export const HIDDEN_ROUTES: readonly string[] = [
   '/services',
   '/portfolio',
   '/digital-media',
-  '/news',
   '/about',
 ];
 

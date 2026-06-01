@@ -13,7 +13,6 @@ const HIDDEN_ROUTES = [
   '/services',
   '/portfolio',
   '/digital-media',
-  '/news',
   '/about',
 ];
 
