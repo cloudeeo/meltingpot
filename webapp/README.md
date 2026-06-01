@@ -120,17 +120,50 @@ sudo docker compose -f docker-compose.prod.yml --env-file .env.production ps
 
 ## Editing content
 
-| Type        | Location                          | Format |
-|-------------|-----------------------------------|--------|
-| Blog posts  | `src/content/posts/*.mdx`         | MDX with frontmatter |
-| Case studies| `src/content/case-studies/*.mdx`  | MDX with frontmatter |
-| Videos      | `src/content/videos/*.mdx`        | MDX, `url` is the YouTube/Vimeo link |
+| Type        | Location                              | Format |
+|-------------|---------------------------------------|--------|
+| Blog posts  | `src/content/posts/<lang>/*.mdx`      | MDX with frontmatter |
+| Case studies| `src/content/case-studies/<lang>/*.mdx` | MDX with frontmatter |
+| Videos      | `src/content/videos/<lang>/*.mdx`     | MDX, `url` is the YouTube/Vimeo link |
+
+`<lang>` is `en` or `fr`. An entry's locale and slug come from its folder:
+`posts/en/foo.mdx` and `posts/fr/foo.mdx` share the slug `foo`, so the
+language switcher maps between them. Keep the **same file name** for the
+two language versions of one article. Cover images can be shared from the
+`en/` folder (e.g. `cover: ../en/foo.webp`).
 
 Frontmatter schemas live in `src/content.config.ts` (Zod-validated at
 build time). Set `draft: true` to hide an entry. Push to git → run
 deploy → site updates.
 
+## Internationalisation (EN / FR)
+
+The site is bilingual via Astro's built-in i18n. English is the default
+locale and is served **unprefixed** (`/`, `/contact`); French lives under
+`/fr` (`/fr/`, `/fr/contact`). A header language switcher links each page
+to its counterpart, and `<html lang>` + `hreflang` alternates are emitted
+on every page.
+
+- **UI copy** lives in dictionaries: `src/i18n/en.ts` (the canonical
+  shape) and `src/i18n/fr.ts` (typed `Dictionary`, so a missing key fails
+  `tsc`). Add a key to `en.ts` and the compiler tells you to translate it
+  in `fr.ts`.
+- **Helpers** (`src/i18n/`): `getLocaleFromUrl`, `localizePath`,
+  `getAlternates`, `getNav`, `getDictionary`, `formatDate(value, locale)`.
+- **Pages** are thin route files (`src/pages/*` for EN, `src/pages/fr/*`
+  for FR) that render a shared, locale-aware view from
+  `src/components/views/`.
+- **Content** is split per locale by folder (see *Editing content*).
+
+To add a locale: extend `locales` in `src/i18n/config.ts` **and** the
+mirrored `LOCALES` in `astro.config.mjs`, add a `src/i18n/<lang>.ts`
+dictionary, create `src/pages/<lang>/*` route files, and add the
+`<lang>/` content folders.
+
 ## Routes
+
+Routes below are the English (default-locale) paths; each also exists
+under `/fr` (e.g. `/fr/contact`, `/fr/news/[slug]`, `/fr/rss.xml`).
 
 | Path                      | Source                              | Notes                       |
 |---------------------------|-------------------------------------|-----------------------------|
@@ -145,8 +178,8 @@ deploy → site updates.
 | `/contact`                | `src/pages/contact.astro`           | POSTs to `/api/contact`     |
 | `/api/contact`            | `src/pages/api/contact.ts`          | Persists to Postgres        |
 | `/api/health`             | `src/pages/api/health.ts`           | Liveness + DB ping          |
-| `/sitemap-index.xml`      | `@astrojs/sitemap` integration      |                             |
-| `/rss.xml`                | `src/pages/rss.xml.ts`              | News RSS feed               |
+| `/sitemap-index.xml`      | `@astrojs/sitemap` integration      | Emits `hreflang` alternates |
+| `/rss.xml`                | `src/pages/rss.xml.ts`              | News RSS feed (`/fr/rss.xml` for FR) |
 | `/robots.txt`             | `src/pages/robots.txt.ts`           |                             |
 
 ## SEO

@@ -1,11 +1,17 @@
 ---
 import { Image } from 'astro:assets';
-import { formatDate, toIsoDate, truncate } from '~/lib/format';
+import { toIsoDate, truncate } from '~/lib/format';
+import { postHref } from '~/lib/content';
+import { formatDate, getDictionary, type Locale } from '~/i18n';
 import type { CollectionEntry } from 'astro:content';
 
-interface Props { post: CollectionEntry<'posts'>; }
-const { post } = Astro.props;
-const href = `/news/${post.id.replace(/\.(md|mdx)$/, '')}`;
+interface Props {
+  post: CollectionEntry<'posts'>;
+  locale: Locale;
+}
+const { post, locale } = Astro.props;
+const t = getDictionary(locale);
+const href = postHref(post, locale);
 ---
 <article class="card card-post">
   {post.data.cover && (
@@ -15,10 +21,10 @@ const href = `/news/${post.id.replace(/\.(md|mdx)$/, '')}`;
   )}
   <div class="card-body">
     <p class="card-meta">
-      <time datetime={toIsoDate(post.data.publishedAt)}>{formatDate(post.data.publishedAt)}</time>
+      <time datetime={toIsoDate(post.data.publishedAt)}>{formatDate(post.data.publishedAt, locale)}</time>
     </p>
     <h3 class="card-title"><a href={href}>{post.data.title}</a></h3>
     <p class="card-excerpt">{truncate(post.data.description, 160)}</p>
-    <p class="card-link"><a href={href}>Read article →</a></p>
+    <p class="card-link"><a href={href}>{t.cards.readArticle}</a></p>
   </div>
 </article>

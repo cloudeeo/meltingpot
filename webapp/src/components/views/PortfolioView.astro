@@ -1,0 +1,52 @@
+---
+import Base from '~/layouts/Base.astro';
+import CardCaseStudy from '~/components/CardCaseStudy.astro';
+import { buildSeo } from '~/lib/seo';
+import { getCollection } from 'astro:content';
+import { filterByLocale } from '~/lib/content';
+import { getDictionary, localizePath, type Locale } from '~/i18n';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = getDictionary(locale);
+const p = t.portfolio;
+
+const seo = buildSeo({
+  path: localizePath('/portfolio', locale),
+  locale,
+  title: p.seoTitle,
+  description: p.seoDescription,
+});
+
+const items = filterByLocale(await getCollection('caseStudies', ({ data }) => !data.draft), locale)
+  .sort((a, b) => a.data.order - b.data.order);
+---
+<Base seo={seo}>
+  <section class="page-hero">
+    <div class="container">
+      <p class="eyebrow">{p.eyebrow}</p>
+      <h1>{p.title}</h1>
+      <p class="page-lede">{p.lede}</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      {items.length > 0 ? (
+        <ul class="card-grid card-grid-2">
+          {items.map((entry) => (
+            <li><CardCaseStudy entry={entry} locale={locale} /></li>
+          ))}
+        </ul>
+      ) : (
+        <div class="empty-state empty-state-callout">
+          <h2>{p.emptyTitle}</h2>
+          <p>{p.emptyBody}</p>
+          <a class="btn btn-primary" href={localizePath('/contact', locale)}>{p.emptyButton}</a>
+        </div>
+      )}
+    </div>
+  </section>
+</Base>

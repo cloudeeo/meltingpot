@@ -1,0 +1,60 @@
+---
+import Base from '~/layouts/Base.astro';
+import Icon from '~/components/Icon.astro';
+import { buildSeo } from '~/lib/seo';
+import { getDictionary, localizePath, type Locale } from '~/i18n';
+import type { IconKey } from '~/lib/icons';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = getDictionary(locale);
+const s = t.services;
+
+const seo = buildSeo({
+  path: localizePath('/services', locale),
+  locale,
+  title: s.seoTitle,
+  description: s.seoDescription,
+});
+
+// Icons pair with `s.items` by index (icons are not translated).
+const serviceIcons: IconKey[] = ['advisory', 'governance', 'pmo', 'scale', 'ai'];
+---
+<Base seo={seo}>
+  <section class="page-hero">
+    <div class="container">
+      <p class="eyebrow">{s.eyebrow}</p>
+      <h1>{s.title}</h1>
+      <p class="page-lede">{s.lede}</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <ul class="service-list service-list-detailed">
+        {s.items.map((item, i) => (
+          <li class="service-item-detailed">
+            <header class="service-item-header">
+              <span class="service-icon" aria-hidden="true"><Icon name={serviceIcons[i]} /></span>
+              <h2>{item.title}</h2>
+            </header>
+            <p>{item.body}</p>
+            <ul class="bullet-list">
+              {item.bullets.map((b) => <li>{b}</li>)}
+            </ul>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section section-dark">
+    <div class="container closing">
+      <h2>{s.closingTitle}</h2>
+      <p>{s.closingBody}</p>
+      <a class="btn btn-light" href={localizePath('/contact', locale)}>{s.closingButton}</a>
+    </div>
+  </section>
+</Base>

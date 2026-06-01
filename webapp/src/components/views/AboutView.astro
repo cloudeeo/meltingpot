@@ -1,0 +1,51 @@
+---
+import Base from '~/layouts/Base.astro';
+import { buildSeo } from '~/lib/seo';
+import { getDictionary, localizePath, type Locale } from '~/i18n';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = getDictionary(locale);
+const a = t.about;
+
+const seo = buildSeo({
+  path: localizePath('/about', locale),
+  locale,
+  title: a.seoTitle,
+  description: a.seoDescription,
+});
+---
+<Base seo={seo}>
+  <section class="page-hero">
+    <div class="container">
+      <p class="eyebrow">{a.eyebrow}</p>
+      <h1>{a.title}</h1>
+      <p class="page-lede">{a.lede}</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container about-grid">
+      <div class="about-content prose">
+        <h2>{a.whoTitle}</h2>
+        {a.whoBody.map((p) => <p>{p}</p>)}
+
+        <h2>{a.engageTitle}</h2>
+        <p>{a.engageBody}</p>
+      </div>
+
+      <aside class="about-side">
+        <ul class="meta-list">
+          {a.side.map((item) => (
+            <li>
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </li>
+          ))}
+        </ul>
+      </aside>
+    </div>
+  </section>
+</Base>

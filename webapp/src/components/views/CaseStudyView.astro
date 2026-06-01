@@ -1,0 +1,43 @@
+---
+import { render } from 'astro:content';
+import Base from '~/layouts/Base.astro';
+import { buildSeo } from '~/lib/seo';
+import { caseStudyHref } from '~/lib/content';
+import { getDictionary, type Locale } from '~/i18n';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  entry: CollectionEntry<'caseStudies'>;
+  locale: Locale;
+}
+const { entry, locale } = Astro.props;
+const t = getDictionary(locale);
+const { Content } = await render(entry);
+
+const seo = buildSeo({
+  path: caseStudyHref(entry, locale),
+  locale,
+  title: entry.data.title,
+  description: entry.data.description,
+  type: 'article',
+});
+---
+<Base seo={seo}>
+  <section class="single-hero">
+    <div class="container">
+      <p class="eyebrow">
+        {entry.data.sector ?? t.cards.caseStudyFallback}
+        {entry.data.year && <span> · {entry.data.year}</span>}
+      </p>
+      <h1 class="single-title">{entry.data.title}</h1>
+      <p class="single-lede">{entry.data.description}</p>
+      {entry.data.client && <p class="card-client">{entry.data.client}</p>}
+    </div>
+  </section>
+
+  <section class="container" style="padding: 24px 0 64px;">
+    <div class="prose">
+      <Content />
+    </div>
+  </section>
+</Base>

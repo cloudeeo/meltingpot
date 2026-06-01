@@ -4,5 +4,5 @@ import { buildRss } from '~/lib/rss';
 export const prerender = true;
 
 export async function GET(context: APIContext) {
-  return buildRss(context, 'en');
+  return buildRss(context, 'fr');
 }

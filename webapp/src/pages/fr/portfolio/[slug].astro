@@ -7,7 +7,7 @@ import { filterByLocale, contentSlug } from '~/lib/content';
 
 export async function getStaticPaths() {
   if (SOFT_LAUNCH) return [];
-  const entries = filterByLocale(await getCollection('caseStudies', ({ data }) => !data.draft), 'en');
+  const entries = filterByLocale(await getCollection('caseStudies', ({ data }) => !data.draft), 'fr');
   return entries.map((entry) => ({
     params: { slug: contentSlug(entry.id) },
     props: { entry },
@@ -16,4 +16,4 @@ export async function getStaticPaths() {
 
 const { entry } = Astro.props;
 ---
-<CaseStudyView entry={entry} locale="en" />
+<CaseStudyView entry={entry} locale="fr" />

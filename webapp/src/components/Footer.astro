@@ -1,6 +1,15 @@
 ---
 import LogoMark from './LogoMark.astro';
 import { SITE } from '~/lib/site';
+import { getDictionary, getNav, getCta, type Locale } from '~/i18n';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = getDictionary(locale);
+const nav = getNav(locale);
+const cta = getCta(locale);
 const year = new Date().getFullYear();
 const socials = [
   { label: 'LinkedIn', href: SITE.social.linkedin },
@@ -14,26 +23,26 @@ const socials = [
       <LogoMark size={32} />
       <div class="footer-brand-text">
         <strong>{SITE.name}</strong>
-        <p>Governance, strategic advisory and operational leadership for modern organisations.</p>
+        <p>{t.footer.blurb}</p>
       </div>
     </div>
 
     <div>
-      <h2 class="footer-heading">Explore</h2>
+      <h2 class="footer-heading">{t.footer.explore}</h2>
       <ul class="footer-menu">
-        {SITE.nav.map((item) => (
+        {nav.map((item) => (
           <li><a href={item.href}>{item.label}</a></li>
         ))}
       </ul>
     </div>
 
     <div>
-      <h2 class="footer-heading">Contact</h2>
+      <h2 class="footer-heading">{t.footer.contact}</h2>
       <ul class="footer-menu">
-        <li><a href="/contact">Get in touch</a></li>
+        <li><a href={cta.href}>{t.footer.getInTouch}</a></li>
       </ul>
       {socials.length > 0 && (
-        <ul class="footer-social" aria-label="Social links">
+        <ul class="footer-social" aria-label={t.footer.socialLabel}>
           {socials.map((s) => (
             <li><a href={s.href} target="_blank" rel="me noopener">{s.label}</a></li>
           ))}
@@ -43,7 +52,7 @@ const socials = [
   </div>
 
   <div class="container footer-base">
-    <p>&copy; {year} {SITE.name}. All rights reserved.</p>
-    <p class="footer-tag">We operate at leadership level, not at task level.</p>
+    <p>&copy; {year} {SITE.name}. {t.footer.rights}</p>
+    <p class="footer-tag">{t.footer.tag}</p>
   </div>
 </footer>
