@@ -1,7 +1,7 @@
 ---
 import { isHidden } from '~/lib/launch';
 export const prerender = !isHidden('/news');
-if (isHidden('/news')) return Astro.redirect('/', 302);
+if (isHidden('/news')) return Astro.redirect('/fr', 302);
 import NewsListView from '~/components/views/NewsListView.astro';
 ---
-<NewsListView locale="en" />
+<NewsListView locale="fr" />

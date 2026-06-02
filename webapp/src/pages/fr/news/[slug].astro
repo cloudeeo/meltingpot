@@ -7,7 +7,7 @@ import { filterByLocale, contentSlug } from '~/lib/content';
 
 export async function getStaticPaths() {
   if (isHidden('/news')) return [];
-  const posts = filterByLocale(await getCollection('posts', ({ data }) => !data.draft), 'en');
+  const posts = filterByLocale(await getCollection('posts', ({ data }) => !data.draft), 'fr');
   return posts.map((post) => ({
     params: { slug: contentSlug(post.id) },
     props: { post },
@@ -16,4 +16,4 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 ---
-<PostView post={post} locale="en" />
+<PostView post={post} locale="fr" />

@@ -1,7 +1,7 @@
 ---
 import { SOFT_LAUNCH } from '~/lib/launch';
 export const prerender = !SOFT_LAUNCH;
-if (SOFT_LAUNCH) return Astro.redirect('/', 302);
+if (SOFT_LAUNCH) return Astro.redirect('/fr', 302);
 import PortfolioView from '~/components/views/PortfolioView.astro';
 ---
-<PortfolioView locale="en" />
+<PortfolioView locale="fr" />

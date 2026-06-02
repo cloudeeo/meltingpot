@@ -1,11 +1,5 @@
-export function formatDate(value: Date | string): string {
-  const d = typeof value === 'string' ? new Date(value) : value;
-  return d.toLocaleDateString('en-GB', {
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-  });
-}
+// Locale-aware date formatting lives in `src/i18n` (`formatDate(value,
+// locale)`). `toIsoDate` below is locale-independent (machine-readable).
 
 export function toIsoDate(value: Date | string): string {
   const d = typeof value === 'string' ? new Date(value) : value;

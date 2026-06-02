@@ -1,0 +1,230 @@
+---
+import Base from '~/layouts/Base.astro';
+import Icon from '~/components/Icon.astro';
+import CardPost from '~/components/CardPost.astro';
+import { Image } from 'astro:assets';
+import hero01 from '~/assets/images/hero01.webp';
+import hero02 from '~/assets/images/hero02.webp';
+import { buildSeo } from '~/lib/seo';
+import { getCollection } from 'astro:content';
+import { SITE } from '~/lib/site';
+import { isHidden } from '~/lib/launch';
+import { filterByLocale } from '~/lib/content';
+import { getDictionary, localizePath, type Locale } from '~/i18n';
+import type { IconKey } from '~/lib/icons';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = getDictionary(locale);
+const h = t.home;
+
+const seo = buildSeo({ path: localizePath('/', locale), locale, description: t.meta.description });
+
+// Icons pair with `h.services` by index (icons are not translated).
+const serviceIcons: IconKey[] = ['advisory', 'governance', 'pmo', 'scale', 'ai'];
+
+const latest = isHidden('/news')
+  ? []
+  : filterByLocale(await getCollection('posts', ({ data }) => !data.draft), locale)
+      .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime())
+      .slice(0, 3);
+
+const contactHref = localizePath('/contact', locale);
+const servicesHref = localizePath('/services', locale);
+const newsHref = localizePath('/news', locale);
+
+const primaryCtaHref = isHidden('/services') ? contactHref : servicesHref;
+const primaryCtaLabel = isHidden('/services') ? h.heroPrimarySoft : h.heroPrimaryFull;
+const secondaryCtaHref = contactHref;
+const secondaryCtaLabel = h.heroSecondary;
+---
+<Base seo={seo}>
+
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="container hero-inner">
+      <p class="eyebrow">{t.meta.tagline}</p>
+      <h1 id="hero-title" class="hero-title">{SITE.name}</h1>
+      <p class="hero-lede">{t.meta.description}</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href={primaryCtaHref}>{primaryCtaLabel}</a>
+        {primaryCtaHref !== secondaryCtaHref && (
+          <a class="btn btn-ghost" href={secondaryCtaHref}>{secondaryCtaLabel}</a>
+        )}
+      </div>
+    </div>
+    <div class="container hero-divider" aria-hidden="true"></div>
+  </section>
+
+  <section class="image-band" aria-labelledby="approach-title">
+    <Image
+      src={hero01}
+      alt=""
+      widths={[640, 960, 1400, 2000]}
+      sizes="100vw"
+      class="image-band-bg"
+      loading="eager"
+      fetchpriority="high"
+    />
+    <div class="image-band-scrim" aria-hidden="true"></div>
+    <div class="container image-band-content">
+      <div class="image-band-text">
+        <h2 id="approach-title">{h.approachTitle}</h2>
+        <p>{h.approachBody}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-light">
+    <div class="container">
+      <ul class="card-grid card-grid-4">
+        {h.approach.map((a) => (
+          <li class="card card-soft">
+            <h3>{a.title}</h3>
+            <p>{a.body}</p>
+          </li>
+        ))}
+      </ul>
+      <blockquote class="pullquote">
+        <p>{h.pullquote}</p>
+      </blockquote>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="services-title">
+    <div class="container">
+      <header class="section-head">
+        <h2 id="services-title">{h.servicesTitle}</h2>
+        <p class="section-lede">{h.servicesLede}</p>
+      </header>
+      <ul class="service-list">
+        {h.services.map((s, i) => (
+          <li class="service-item">
+            <span class="service-icon" aria-hidden="true"><Icon name={serviceIcons[i]} /></span>
+            <div>
+              <h3>{s.title}</h3>
+              <p>{s.body}</p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="image-band image-band-narrow" aria-labelledby="model-title">
+    <Image
+      src={hero02}
+      alt=""
+      widths={[640, 960, 1400, 2000]}
+      sizes="100vw"
+      class="image-band-bg"
+      loading="lazy"
+    />
+    <div class="image-band-scrim" aria-hidden="true"></div>
+    <div class="container image-band-content">
+      <div class="image-band-text">
+        <p class="eyebrow">{h.modelEyebrow}</p>
+        <h2 id="model-title">{h.modelTitle}</h2>
+        <p>{h.modelBody}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container split-grid">
+      <div class="dual-list">
+        <div>
+          <h3>{h.helpHeading}</h3>
+          <ul>
+            {h.helpItems.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+        <div>
+          <h3>{h.roleHeading}</h3>
+          <ul>
+            {h.roleItems.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+      </div>
+
+      <p class="callout callout-info">{h.callout}</p>
+    </div>
+  </section>
+
+  <section class="section section-light" aria-labelledby="situations-title">
+    <div class="container">
+      <header class="section-head">
+        <h2 id="situations-title">{h.situationsTitle}</h2>
+        <p class="section-lede">{h.situationsLede}</p>
+      </header>
+      <ul class="card-grid card-grid-3">
+        {h.situations.map((s) => (
+          <li class="card card-accent">
+            <h3>{s.title}</h3>
+            <p>{s.body}</p>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="ai-title">
+    <div class="container">
+      <p class="eyebrow">{h.aiEyebrow}</p>
+      <h2 id="ai-title">{h.aiTitle}</h2>
+      <p class="section-lede">{h.aiLede}</p>
+
+      <ul class="card-grid card-grid-3" style="margin-top:32px">
+        {h.aiCards.map((c) => (
+          <li class="card card-outline"><h3>{c.title}</h3><p>{c.body}</p></li>
+        ))}
+      </ul>
+
+      <p class="callout callout-strong">{h.aiCallout}</p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="experience-title">
+    <div class="container">
+      <header class="section-head">
+        <h2 id="experience-title">{h.experienceTitle}</h2>
+      </header>
+      <ul class="card-grid card-grid-2">
+        {h.sectors.map((s) => (
+          <li class="card card-quiet">
+            <h3>{s.title}</h3>
+            <p>{s.body}</p>
+          </li>
+        ))}
+      </ul>
+      <p class="section-footnote">{h.experienceFootnote}</p>
+    </div>
+  </section>
+
+  <section class="section section-dark" aria-labelledby="closing-title">
+    <div class="container closing">
+      <h2 id="closing-title">{h.closingTitle}</h2>
+      <p class="closing-lede">{h.closingLede}</p>
+      <p>{h.closingBody}</p>
+      <a class="btn btn-light" href={contactHref}>{h.closingButton}</a>
+    </div>
+  </section>
+
+  {latest.length > 0 && (
+    <section class="section section-light" aria-labelledby="latest-title">
+      <div class="container">
+        <header class="section-head section-head-row">
+          <h2 id="latest-title">{h.latestTitle}</h2>
+          <a class="section-link" href={newsHref}>{h.latestAll}</a>
+        </header>
+        <ul class="card-grid card-grid-3">
+          {latest.map((p) => (
+            <li><CardPost post={p} locale={locale} /></li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+
+</Base>

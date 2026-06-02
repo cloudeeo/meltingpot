@@ -1,0 +1,48 @@
+---
+import Base from '~/layouts/Base.astro';
+import CardPost from '~/components/CardPost.astro';
+import { buildSeo } from '~/lib/seo';
+import { getCollection } from 'astro:content';
+import { filterByLocale } from '~/lib/content';
+import { getDictionary, localizePath, type Locale } from '~/i18n';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = getDictionary(locale);
+const n = t.news;
+
+const seo = buildSeo({
+  path: localizePath('/news', locale),
+  locale,
+  title: n.seoTitle,
+  description: n.seoDescription,
+});
+
+const posts = filterByLocale(await getCollection('posts', ({ data }) => !data.draft), locale)
+  .sort((a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime());
+---
+<Base seo={seo}>
+  <section class="page-hero">
+    <div class="container">
+      <p class="eyebrow">{n.eyebrow}</p>
+      <h1>{n.title}</h1>
+      <p class="page-lede">{n.lede}</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      {posts.length > 0 ? (
+        <ul class="card-grid card-grid-3">
+          {posts.map((p) => (
+            <li><CardPost post={p} locale={locale} /></li>
+          ))}
+        </ul>
+      ) : (
+        <p class="empty-state">{n.empty}</p>
+      )}
+    </div>
+  </section>
+</Base>

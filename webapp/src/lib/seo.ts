@@ -1,9 +1,13 @@
 import { SITE } from './site';
+import { getDictionary, type Locale } from '~/i18n';
 
 export interface SeoInput {
   title?: string;
   description?: string;
+  /** Locale-prefixed path, e.g. `/contact` or `/fr/contact`. */
   path: string;
+  /** Active locale; defaults to English copy when omitted. */
+  locale?: Locale;
   image?: string;
   type?: 'website' | 'article';
   publishedAt?: string;
@@ -23,8 +27,9 @@ export interface Seo {
 }
 
 export function buildSeo(input: SeoInput): Seo {
-  const title = input.title ? `${input.title} — ${SITE.name}` : `${SITE.name} — ${SITE.tagline}`;
-  const description = input.description ?? SITE.description;
+  const t = getDictionary(input.locale ?? 'en');
+  const title = input.title ? `${input.title} — ${SITE.name}` : `${SITE.name} — ${t.meta.tagline}`;
+  const description = input.description ?? t.meta.description;
   const canonical = `${SITE.url}${input.path}`;
   const image = input.image ?? `${SITE.url}/og-default.png`;
   return {

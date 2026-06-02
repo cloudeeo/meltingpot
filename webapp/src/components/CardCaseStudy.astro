@@ -1,11 +1,17 @@
 ---
 import { Image } from 'astro:assets';
 import { truncate } from '~/lib/format';
+import { caseStudyHref } from '~/lib/content';
+import { getDictionary, type Locale } from '~/i18n';
 import type { CollectionEntry } from 'astro:content';
 
-interface Props { entry: CollectionEntry<'caseStudies'>; }
-const { entry } = Astro.props;
-const href = `/portfolio/${entry.id.replace(/\.(md|mdx)$/, '')}`;
+interface Props {
+  entry: CollectionEntry<'caseStudies'>;
+  locale: Locale;
+}
+const { entry, locale } = Astro.props;
+const t = getDictionary(locale);
+const href = caseStudyHref(entry, locale);
 ---
 <article class="card card-case">
   {entry.data.cover && (
@@ -21,6 +27,6 @@ const href = `/portfolio/${entry.id.replace(/\.(md|mdx)$/, '')}`;
     <h3 class="card-title"><a href={href}>{entry.data.title}</a></h3>
     {entry.data.client && <p class="card-client">{entry.data.client}</p>}
     <p class="card-excerpt">{truncate(entry.data.description, 180)}</p>
-    <p class="card-link"><a href={href}>Read engagement →</a></p>
+    <p class="card-link"><a href={href}>{t.cards.readEngagement}</a></p>
   </div>
 </article>

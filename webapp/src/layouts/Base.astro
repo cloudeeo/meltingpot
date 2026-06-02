@@ -4,6 +4,15 @@ import Header from '~/components/Header.astro';
 import Footer from '~/components/Footer.astro';
 import SeoHead from '~/components/SeoHead.astro';
 import type { Seo } from '~/lib/seo';
+import { SITE } from '~/lib/site';
+import {
+  getLocaleFromUrl,
+  getAlternates,
+  getDictionary,
+  localizePath,
+  localeHtmlLang,
+  defaultLocale,
+} from '~/i18n';
 
 interface Props {
   seo: Seo;
@@ -11,9 +20,14 @@ interface Props {
   bodyClass?: string;
 }
 const { seo, jsonLd, bodyClass = '' } = Astro.props;
+
+const locale = getLocaleFromUrl(Astro.url);
+const t = getDictionary(locale);
+const alternates = getAlternates(Astro.url.pathname);
+const defaultAlt = alternates.find((a) => a.locale === defaultLocale) ?? alternates[0];
 ---
 <!doctype html>
-<html lang="en">
+<html lang={localeHtmlLang[locale]}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -24,15 +38,19 @@ const { seo, jsonLd, bodyClass = '' } = Astro.props;
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" media="print" onload="this.media='all'" />
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" /></noscript>
     <link rel="sitemap" href="/sitemap-index.xml" />
-    <link rel="alternate" type="application/rss+xml" title="Executive Founders — News" href="/rss.xml" />
+    <link rel="alternate" type="application/rss+xml" title={`${SITE.name} — ${t.news.rssTitle}`} href={localizePath('/rss.xml', locale)} />
+    {alternates.map((alt) => (
+      <link rel="alternate" hreflang={localeHtmlLang[alt.locale]} href={`${SITE.url}${alt.path}`} />
+    ))}
+    <link rel="alternate" hreflang="x-default" href={`${SITE.url}${defaultAlt.path}`} />
     <SeoHead seo={seo} jsonLd={jsonLd} />
     <slot name="head" />
   </head>
   <body class={bodyClass}>
-    <Header />
+    <Header locale={locale} />
     <main id="site-main" class="site-main">
       <slot />
     </main>
-    <Footer />
+    <Footer locale={locale} />
   </body>
 </html>

@@ -1,38 +1,50 @@
 ---
 import LogoMark from './LogoMark.astro';
+import LanguageSwitcher from './LanguageSwitcher.astro';
 import { SITE } from '~/lib/site';
+import { getDictionary, getNav, getCta, localizePath, type Locale } from '~/i18n';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = getDictionary(locale);
+const nav = getNav(locale);
+const cta = getCta(locale);
+const homeHref = localizePath('/', locale);
 
 const pathname = Astro.url.pathname.replace(/\/$/, '') || '/';
 const isCurrent = (href: string) => {
-  if (href === '/') return pathname === '/';
+  if (href === homeHref) return pathname === homeHref;
   return pathname === href || pathname.startsWith(`${href}/`);
 };
 ---
-<a class="skip-link" href="#site-main">Skip to content</a>
+<a class="skip-link" href="#site-main">{t.header.skip}</a>
 
 <header class="site-header" id="site-header">
   <div class="container header-inner">
-    <a href="/" class="site-branding" aria-label={`${SITE.name} — home`}>
+    <a href={homeHref} class="site-branding" aria-label={`${SITE.name} — ${t.header.home}`}>
       <LogoMark size={36} />
       <span class="logo-text">
         <strong>{SITE.name}</strong>
-        <small>{SITE.tagline}</small>
+        <small>{t.meta.tagline}</small>
       </span>
     </a>
 
-    <button class="menu-toggle" id="menu-toggle" aria-label="Toggle navigation" aria-controls="main-navigation" aria-expanded="false">
+    <button class="menu-toggle" id="menu-toggle" aria-label={t.header.toggleNav} aria-controls="main-navigation" aria-expanded="false">
       <span class="hamburger" aria-hidden="true"></span>
     </button>
 
-    <nav class="main-navigation" id="main-navigation" aria-label="Primary">
+    <nav class="main-navigation" id="main-navigation" aria-label={t.header.primaryNav}>
       <ul class="nav-menu">
-        {SITE.nav.map((item) => (
+        {nav.map((item) => (
           <li>
             <a href={item.href} class={isCurrent(item.href) ? 'is-current' : ''}>{item.label}</a>
           </li>
         ))}
       </ul>
-      <a class="nav-cta" href={SITE.cta.href}>{SITE.cta.label}</a>
+      <a class="nav-cta" href={cta.href}>{cta.label}</a>
+      <LanguageSwitcher locale={locale} />
     </nav>
   </div>
 </header>

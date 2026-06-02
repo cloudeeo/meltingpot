@@ -1,0 +1,135 @@
+---
+import Base from '~/layouts/Base.astro';
+import { buildSeo } from '~/lib/seo';
+import { getDictionary, localizePath, type Locale } from '~/i18n';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = getDictionary(locale);
+const c = t.contact;
+
+const seo = buildSeo({
+  path: localizePath('/contact', locale),
+  locale,
+  title: c.seoTitle,
+  description: c.seoDescription,
+});
+---
+<Base seo={seo}>
+  <section class="page-hero">
+    <div class="container">
+      <p class="eyebrow">{c.eyebrow}</p>
+      <h1>{c.title}</h1>
+      <p class="page-lede">{c.lede}</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container contact-grid">
+      <div class="contact-form-wrap">
+        <div id="form-feedback" hidden></div>
+        <form
+          class="contact-form"
+          id="contact-form"
+          method="post"
+          action="/api/contact"
+          novalidate
+          data-msg-sending={c.feedback.sending}
+          data-msg-success={c.feedback.success}
+          data-msg-error={c.feedback.error}
+          data-msg-network={c.feedback.networkError}
+        >
+          <div class="form-row">
+            <label for="name">{c.form.name}</label>
+            <input type="text" id="name" name="name" required autocomplete="name" maxlength="200" />
+          </div>
+          <div class="form-row">
+            <label for="email">{c.form.email}</label>
+            <input type="email" id="email" name="email" required autocomplete="email" maxlength="320" />
+          </div>
+          <div class="form-row">
+            <label for="organisation">{c.form.organisation}</label>
+            <input type="text" id="organisation" name="organisation" autocomplete="organization" maxlength="200" />
+          </div>
+          <div class="form-row">
+            <label for="topic">{c.form.topic}</label>
+            <select id="topic" name="topic">
+              <option value="">{c.form.topicPlaceholder}</option>
+              {c.form.options.map((opt) => (
+                <option value={opt.value}>{opt.label}</option>
+              ))}
+            </select>
+          </div>
+          <div class="form-row">
+            <label for="message">{c.form.message}</label>
+            <textarea id="message" name="message" rows="5" required minlength="5" maxlength="5000"></textarea>
+          </div>
+          {/* Honeypot — hidden from humans, bots fill it. */}
+          <div class="form-row" aria-hidden="true" style="position:absolute;left:-9999px;">
+            <label for="company_url">{c.form.honeypot}</label>
+            <input type="text" id="company_url" name="company_url" tabindex="-1" autocomplete="off" />
+          </div>
+          <button type="submit" class="btn btn-primary">{c.form.submit}</button>
+          <p class="form-note">{c.form.note}</p>
+        </form>
+      </div>
+
+      <aside class="contact-side">
+        <h2>{c.asideHeading}</h2>
+        <ul class="meta-list">
+          {c.aside.map((item) => (
+            <li>
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </li>
+          ))}
+        </ul>
+      </aside>
+    </div>
+  </section>
+
+  <script>
+    const form = document.getElementById('contact-form') as HTMLFormElement | null;
+    const feedback = document.getElementById('form-feedback');
+    if (form && feedback) {
+      const msg = {
+        sending: form.dataset.msgSending ?? 'Sending…',
+        success: form.dataset.msgSuccess ?? 'Thanks — we received your message.',
+        error: form.dataset.msgError ?? 'Something went wrong. Please try again.',
+        network: form.dataset.msgNetwork ?? 'Network error. Please try again.',
+      };
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        feedback.hidden = false;
+        feedback.className = '';
+        feedback.textContent = msg.sending;
+
+        const formData = new FormData(form);
+        const payload = Object.fromEntries(formData.entries());
+
+        try {
+          const res = await fetch('/api/contact', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+          const json = await res.json().catch(() => ({}));
+          if (res.ok) {
+            feedback.className = 'form-success';
+            feedback.textContent = msg.success;
+            form.reset();
+          } else {
+            feedback.className = 'form-error';
+            feedback.textContent = json.error ?? msg.error;
+          }
+        } catch {
+          feedback.className = 'form-error';
+          feedback.textContent = msg.network;
+        }
+      });
+    }
+  </script>
+</Base>

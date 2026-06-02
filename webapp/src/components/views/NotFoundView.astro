@@ -1,0 +1,32 @@
+---
+import Base from '~/layouts/Base.astro';
+import { buildSeo } from '~/lib/seo';
+import { getDictionary, localizePath, type Locale } from '~/i18n';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = getDictionary(locale);
+const nf = t.notFound;
+
+const seo = buildSeo({
+  path: localizePath('/404', locale),
+  locale,
+  title: nf.seoTitle,
+  description: nf.seoDescription,
+});
+---
+<Base seo={seo}>
+  <section class="page-hero">
+    <div class="container">
+      <p class="eyebrow">{nf.eyebrow}</p>
+      <h1>{nf.title}</h1>
+      <p class="page-lede">{nf.lede}</p>
+      <div class="hero-cta" style="margin-top:24px;">
+        <a class="btn btn-primary" href={localizePath('/', locale)}>{nf.backHome}</a>
+        <a class="btn btn-ghost" href={localizePath('/contact', locale)}>{nf.contact}</a>
+      </div>
+    </div>
+  </section>
+</Base>
