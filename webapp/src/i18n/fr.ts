@@ -44,6 +44,12 @@ const fr: Dictionary = {
     socialLabel: 'Liens sociaux',
     rights: 'Tous droits réservés.',
     tag: 'Nous intervenons au niveau de la direction, pas au niveau des tâches.',
+    legal: {
+      heading: 'Mentions légales',
+      privacy: 'Politique de confidentialité',
+      terms: "Conditions d'utilisation",
+      preferences: 'Préférences cookies',
+    },
   },
 
   home: {
@@ -318,6 +324,31 @@ const fr: Dictionary = {
     readArticle: "Lire l'article →",
     readEngagement: 'Lire la mission →',
     caseStudyFallback: 'Étude de cas',
+  },
+
+  legal: {
+    eyebrow: 'Mentions légales',
+    effectiveDate: 'Date d\'effet',
+    updatedAt: 'Dernière mise à jour',
+    reviewBanner:
+      "Brouillon de travail — à valider par votre conseil juridique avant publication. Vérifiez l'entité légale, l'adresse, l'e-mail de contact et la date d'effet.",
+    privacyPath: '/privacy',
+    termsPath: '/terms',
+    privacySeoTitle: 'Politique de confidentialité',
+    privacySeoDescription:
+      "Comment Executive Founders traite les données personnelles sur executivefounders.com. Données du formulaire de contact, conservation, vos droits au titre du RGPD et de la LPD révisée.",
+    termsSeoTitle: "Conditions d'utilisation",
+    termsSeoDescription:
+      "Conditions régissant l'utilisation d'executivefounders.com — propriété intellectuelle, avertissements et droit suisse applicable.",
+  },
+
+  cookieBanner: {
+    title: 'Une note rapide sur ce site',
+    body:
+      "Nous n'utilisons aucun cookie d'analyse, de publicité ou de suivi. Votre navigateur enregistre uniquement une petite trace une fois la notice acceptée, afin que nous ne la réaffichions pas à chaque visite.",
+    moreInfo: 'Lire notre politique de confidentialité',
+    acknowledge: "J'ai compris",
+    closeAria: 'Fermer la notice',
   },
 };
 

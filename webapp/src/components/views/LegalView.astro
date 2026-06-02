@@ -1,0 +1,54 @@
+---
+import { render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import Base from '~/layouts/Base.astro';
+import { buildSeo } from '~/lib/seo';
+import { formatDate, getDictionary, localizePath, type Locale } from '~/i18n';
+import { toIsoDate } from '~/lib/format';
+
+interface Props {
+  doc: CollectionEntry<'legal'>;
+  locale: Locale;
+  /** Locale-agnostic path of this page, e.g. `/privacy` or `/terms`. */
+  path: string;
+  /** SEO title override; falls back to `doc.data.title`. */
+  seoTitle?: string;
+  /** SEO description override; falls back to `doc.data.lede`. */
+  seoDescription?: string;
+}
+
+const { doc, locale, path, seoTitle, seoDescription } = Astro.props;
+const t = getDictionary(locale);
+const { Content } = await render(doc);
+
+const seo = buildSeo({
+  path: localizePath(path, locale),
+  locale,
+  title: seoTitle ?? doc.data.title,
+  description: seoDescription ?? doc.data.lede,
+});
+---
+<Base seo={seo}>
+  <section class="page-hero">
+    <div class="container">
+      <p class="eyebrow">{t.legal.eyebrow}</p>
+      <h1>{doc.data.title}</h1>
+      <p class="page-lede">{doc.data.lede}</p>
+      <p class="legal-meta">
+        <span>{t.legal.effectiveDate}: <time datetime={toIsoDate(doc.data.effectiveDate)}>{formatDate(doc.data.effectiveDate, locale)}</time></span>
+        {doc.data.updatedAt && (
+          <span class="legal-meta-sep" aria-hidden="true">·</span>
+          <span>{t.legal.updatedAt}: <time datetime={toIsoDate(doc.data.updatedAt)}>{formatDate(doc.data.updatedAt, locale)}</time></span>
+        )}
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <article class="prose legal-prose">
+        <Content />
+      </article>
+    </div>
+  </section>
+</Base>

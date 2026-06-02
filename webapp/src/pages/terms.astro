@@ -1,0 +1,17 @@
+---
+export const prerender = true;
+import { getEntry } from 'astro:content';
+import LegalView from '~/components/views/LegalView.astro';
+import { getDictionary } from '~/i18n';
+
+const t = getDictionary('en');
+const doc = await getEntry('legal', 'en/terms');
+if (!doc) throw new Error('Missing legal/en/terms.mdx');
+---
+<LegalView
+  doc={doc}
+  locale="en"
+  path="/terms"
+  seoTitle={t.legal.termsSeoTitle}
+  seoDescription={t.legal.termsSeoDescription}
+/>

@@ -55,4 +55,14 @@ const videos = defineCollection({
     }),
 });
 
-export const collections = { posts, caseStudies, videos };
+const legal = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/legal' }),
+  schema: z.object({
+    title: z.string(),
+    lede: z.string(),
+    effectiveDate: z.coerce.date(),
+    updatedAt: z.coerce.date().optional(),
+  }),
+});
+
+export const collections = { posts, caseStudies, videos, legal };

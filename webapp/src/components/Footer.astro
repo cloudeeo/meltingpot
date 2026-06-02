@@ -1,7 +1,7 @@
 ---
 import LogoMark from './LogoMark.astro';
 import { SITE } from '~/lib/site';
-import { getDictionary, getNav, getCta, type Locale } from '~/i18n';
+import { getDictionary, getNav, getCta, localizePath, type Locale } from '~/i18n';
 
 interface Props {
   locale: Locale;
@@ -16,6 +16,8 @@ const socials = [
   { label: 'YouTube', href: SITE.social.youtube },
   { label: 'X / Twitter', href: SITE.social.twitter },
 ].filter((s) => s.href);
+const privacyHref = localizePath(t.legal.privacyPath, locale);
+const termsHref = localizePath(t.legal.termsPath, locale);
 ---
 <footer class="site-footer">
   <div class="container footer-grid">
@@ -48,6 +50,17 @@ const socials = [
           ))}
         </ul>
       )}
+    </div>
+
+    <div>
+      <h2 class="footer-heading">{t.footer.legal.heading}</h2>
+      <ul class="footer-menu">
+        <li><a href={privacyHref}>{t.footer.legal.privacy}</a></li>
+        <li><a href={termsHref}>{t.footer.legal.terms}</a></li>
+        <li>
+          <a href="#" data-cookie-trigger>{t.footer.legal.preferences}</a>
+        </li>
+      </ul>
     </div>
   </div>
 

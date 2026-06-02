@@ -1,0 +1,107 @@
+---
+import { getDictionary, localizePath, type Locale } from '~/i18n';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = getDictionary(locale);
+const privacyHref = localizePath('/privacy', locale);
+---
+<aside
+  class="cookie-banner"
+  id="cookie-banner"
+  data-storage-key="ef-consent-v1"
+  role="region"
+  aria-label={t.cookieBanner.title}
+  hidden
+>
+  <div class="cookie-banner-inner">
+    <div class="cookie-banner-text">
+      <p class="cookie-banner-title">{t.cookieBanner.title}</p>
+      <p class="cookie-banner-body">
+        {t.cookieBanner.body}{' '}
+        <a href={privacyHref}>{t.cookieBanner.moreInfo}</a>.
+      </p>
+    </div>
+    <div class="cookie-banner-actions">
+      <button type="button" class="btn btn-primary" data-cookie-ack>
+        {t.cookieBanner.acknowledge}
+      </button>
+      <button
+        type="button"
+        class="cookie-banner-close"
+        aria-label={t.cookieBanner.closeAria}
+        data-cookie-ack
+      >×</button>
+    </div>
+  </div>
+</aside>
+
+<script>
+  // Minimal "transparency notice" controller. We do not place any
+  // non-essential cookies, so this is a one-time acknowledgement (not a
+  // categorised consent). Bump the storage key (`ef-consent-v1` →
+  // `ef-consent-v2`) when adding any tracking that requires fresh
+  // consent.
+  (() => {
+    const banner = document.getElementById('cookie-banner') as HTMLElement | null;
+    if (!banner) return;
+    const KEY = banner.dataset.storageKey ?? 'ef-consent-v1';
+
+    const hasAcknowledged = (): boolean => {
+      try {
+        const raw = window.localStorage.getItem(KEY);
+        return Boolean(raw && JSON.parse(raw)?.acknowledged);
+      } catch {
+        return false;
+      }
+    };
+
+    const acknowledge = (): void => {
+      try {
+        window.localStorage.setItem(
+          KEY,
+          JSON.stringify({ acknowledged: true, ts: new Date().toISOString() }),
+        );
+      } catch {
+        // localStorage may be disabled (private mode, quota); we still
+        // dismiss the visible banner so the user is not stuck with it.
+      }
+      hide();
+    };
+
+    const show = (): void => {
+      banner.hidden = false;
+      // double rAF so the CSS transition has a frame to start from.
+      requestAnimationFrame(() =>
+        requestAnimationFrame(() => banner.classList.add('is-visible')),
+      );
+    };
+
+    const hide = (): void => {
+      banner.classList.remove('is-visible');
+      // wait for the transition before fully removing from a11y tree.
+      window.setTimeout(() => {
+        banner.hidden = true;
+      }, 220);
+    };
+
+    banner.querySelectorAll<HTMLElement>('[data-cookie-ack]').forEach((el) => {
+      el.addEventListener('click', acknowledge);
+    });
+
+    // Allow re-opening the banner from anywhere on the page via
+    // a global custom event. The footer "Cookie preferences" link
+    // dispatches `cookie:open` when clicked.
+    document.addEventListener('cookie:open', show);
+    document.querySelectorAll<HTMLElement>('[data-cookie-trigger]').forEach((el) => {
+      el.addEventListener('click', (e) => {
+        e.preventDefault();
+        document.dispatchEvent(new CustomEvent('cookie:open'));
+      });
+    });
+
+    if (!hasAcknowledged()) show();
+  })();
+</script>

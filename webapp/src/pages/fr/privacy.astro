@@ -1,0 +1,17 @@
+---
+export const prerender = true;
+import { getEntry } from 'astro:content';
+import LegalView from '~/components/views/LegalView.astro';
+import { getDictionary } from '~/i18n';
+
+const t = getDictionary('fr');
+const doc = await getEntry('legal', 'fr/privacy');
+if (!doc) throw new Error('Missing legal/fr/privacy.mdx');
+---
+<LegalView
+  doc={doc}
+  locale="fr"
+  path="/privacy"
+  seoTitle={t.legal.privacySeoTitle}
+  seoDescription={t.legal.privacySeoDescription}
+/>

@@ -45,6 +45,12 @@ const en = {
     socialLabel: 'Social links',
     rights: 'All rights reserved.',
     tag: 'We operate at leadership level, not at task level.',
+    legal: {
+      heading: 'Legal',
+      privacy: 'Privacy notice',
+      terms: 'Terms of use',
+      preferences: 'Cookie preferences',
+    },
   },
 
   home: {
@@ -319,6 +325,31 @@ const en = {
     readArticle: 'Read article →',
     readEngagement: 'Read engagement →',
     caseStudyFallback: 'Case study',
+  },
+
+  legal: {
+    eyebrow: 'Legal',
+    effectiveDate: 'Effective',
+    updatedAt: 'Last updated',
+    reviewBanner:
+      'Working draft — to be reviewed by counsel before publication. Verify legal entity, address, contact email and effective date.',
+    privacyPath: '/privacy',
+    termsPath: '/terms',
+    privacySeoTitle: 'Privacy notice',
+    privacySeoDescription:
+      'How Executive Founders handles personal data on executivefounders.com. Contact-form data, retention, your rights under GDPR and Swiss revDSG.',
+    termsSeoTitle: 'Terms of use',
+    termsSeoDescription:
+      'Terms governing the use of executivefounders.com — intellectual property, disclaimers, and Swiss governing law.',
+  },
+
+  cookieBanner: {
+    title: 'A short note about this website',
+    body:
+      'We do not use cookies for analytics, advertising or tracking. Your browser only stores a small record once you acknowledge this notice, so we do not show it on every visit.',
+    moreInfo: 'Read our privacy notice',
+    acknowledge: 'Got it',
+    closeAria: 'Dismiss notice',
   },
 };
 
