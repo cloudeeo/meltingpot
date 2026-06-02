@@ -43,7 +43,7 @@ const defaultAlt = alternates.find((a) => a.locale === defaultLocale) ?? alterna
       <link rel="alternate" hreflang={localeHtmlLang[alt.locale]} href={`${SITE.url}${alt.path}`} />
     ))}
     <link rel="alternate" hreflang="x-default" href={`${SITE.url}${defaultAlt.path}`} />
-    <SeoHead seo={seo} jsonLd={jsonLd} />
+    <SeoHead seo={seo} jsonLd={jsonLd} locale={locale} />
     <slot name="head" />
   </head>
   <body class={bodyClass}>

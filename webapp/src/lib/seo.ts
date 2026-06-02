@@ -1,5 +1,10 @@
 import { SITE } from './site';
-import { getDictionary, type Locale } from '~/i18n';
+import {
+  defaultLocale,
+  getDictionary,
+  localeHtmlLang,
+  type Locale,
+} from '~/i18n';
 
 export interface SeoInput {
   title?: string;
@@ -27,7 +32,7 @@ export interface Seo {
 }
 
 export function buildSeo(input: SeoInput): Seo {
-  const t = getDictionary(input.locale ?? 'en');
+  const t = getDictionary(input.locale ?? defaultLocale);
   const title = input.title ? `${input.title} — ${SITE.name}` : `${SITE.name} — ${t.meta.tagline}`;
   const description = input.description ?? t.meta.description;
   const canonical = `${SITE.url}${input.path}`;
@@ -44,13 +49,17 @@ export function buildSeo(input: SeoInput): Seo {
   };
 }
 
-export function organizationLd() {
+const inLanguageOf = (locale: Locale | undefined): string =>
+  localeHtmlLang[locale ?? defaultLocale];
+
+export function organizationLd(locale?: Locale) {
   return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: SITE.name,
     url: SITE.url,
     logo: `${SITE.url}/logo-ef.svg`,
+    inLanguage: inLanguageOf(locale),
     sameAs: [SITE.social.linkedin, SITE.social.youtube, SITE.social.twitter].filter(Boolean),
     contactPoint: {
       '@type': 'ContactPoint',
@@ -60,17 +69,13 @@ export function organizationLd() {
   };
 }
 
-export function websiteLd() {
+export function websiteLd(locale?: Locale) {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: SITE.name,
     url: SITE.url,
-    potentialAction: {
-      '@type': 'SearchAction',
-      target: `${SITE.url}/news?q={search_term_string}`,
-      'query-input': 'required name=search_term_string',
-    },
+    inLanguage: inLanguageOf(locale),
   };
 }
 
@@ -82,6 +87,7 @@ export function articleLd(args: {
   publishedAt: string;
   modifiedAt?: string;
   author?: string;
+  locale?: Locale;
 }) {
   return {
     '@context': 'https://schema.org',
@@ -98,6 +104,7 @@ export function articleLd(args: {
       logo: { '@type': 'ImageObject', url: `${SITE.url}/logo-ef.svg` },
     },
     mainEntityOfPage: args.url,
+    inLanguage: inLanguageOf(args.locale),
   };
 }
 
@@ -108,6 +115,7 @@ export function videoLd(args: {
   uploadDate: string;
   contentUrl?: string;
   embedUrl?: string;
+  locale?: Locale;
 }) {
   return {
     '@context': 'https://schema.org',
@@ -118,5 +126,6 @@ export function videoLd(args: {
     uploadDate: args.uploadDate,
     contentUrl: args.contentUrl,
     embedUrl: args.embedUrl,
+    inLanguage: inLanguageOf(args.locale),
   };
 }

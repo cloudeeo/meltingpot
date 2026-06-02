@@ -10,6 +10,7 @@ export {
   localeLabels,
   localeShortLabels,
   localeHtmlLang,
+  localeOg,
   isLocale,
   type Locale,
 } from './config';

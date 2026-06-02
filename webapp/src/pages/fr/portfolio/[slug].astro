@@ -1,12 +1,12 @@
 ---
 export const prerender = true;
-import { SOFT_LAUNCH } from '~/lib/launch';
+import { isHidden } from '~/lib/launch';
 import { getCollection } from 'astro:content';
 import CaseStudyView from '~/components/views/CaseStudyView.astro';
 import { filterByLocale, contentSlug } from '~/lib/content';
 
 export async function getStaticPaths() {
-  if (SOFT_LAUNCH) return [];
+  if (isHidden('/portfolio')) return [];
   const entries = filterByLocale(await getCollection('caseStudies', ({ data }) => !data.draft), 'fr');
   return entries.map((entry) => ({
     params: { slug: contentSlug(entry.id) },

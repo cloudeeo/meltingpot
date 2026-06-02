@@ -36,6 +36,7 @@ const jsonLd = [
     publishedAt: toIsoDate(post.data.publishedAt),
     modifiedAt: post.data.updatedAt ? toIsoDate(post.data.updatedAt) : undefined,
     author: post.data.author,
+    locale,
   }),
 ];
 ---

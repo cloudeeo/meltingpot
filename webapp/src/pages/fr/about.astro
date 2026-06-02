@@ -1,7 +1,7 @@
 ---
-import { SOFT_LAUNCH } from '~/lib/launch';
-export const prerender = !SOFT_LAUNCH;
-if (SOFT_LAUNCH) return Astro.redirect('/fr', 302);
+import { isHidden } from '~/lib/launch';
+export const prerender = !isHidden('/about');
+if (isHidden('/about')) return Astro.redirect('/fr', 302);
 import AboutView from '~/components/views/AboutView.astro';
 ---
 <AboutView locale="fr" />

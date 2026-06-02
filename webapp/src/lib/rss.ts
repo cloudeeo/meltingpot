@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content';
 import type { APIContext } from 'astro';
 import type { CollectionEntry } from 'astro:content';
 import { SITE } from '~/lib/site';
-import { SOFT_LAUNCH } from '~/lib/launch';
+import { isHidden } from '~/lib/launch';
 import { filterByLocale, postHref } from '~/lib/content';
 import { getDictionary, type Locale } from '~/i18n';
 
@@ -13,7 +13,7 @@ const rssLang: Record<Locale, string> = { en: 'en-gb', fr: 'fr-fr' };
 export async function buildRss(context: APIContext, locale: Locale): Promise<Response> {
   const t = getDictionary(locale);
   const all: CollectionEntry<'posts'>[] = await getCollection('posts');
-  const posts = SOFT_LAUNCH
+  const posts = isHidden('/news')
     ? []
     : filterByLocale(all, locale)
         .filter((post) => !post.data.draft)

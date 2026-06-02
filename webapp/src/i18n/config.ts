@@ -31,6 +31,17 @@ export const localeHtmlLang: Record<Locale, string> = {
   fr: 'fr',
 };
 
+/**
+ * Open Graph locale codes (`og:locale` / `og:locale:alternate`).
+ * Open Graph wants region-qualified locales (e.g. `en_GB`, not just `en`),
+ * so this is kept separate from `localeHtmlLang`. We use British English
+ * because the site's copy uses British spelling ("organisations").
+ */
+export const localeOg: Record<Locale, string> = {
+  en: 'en_GB',
+  fr: 'fr_FR',
+};
+
 export function isLocale(value: string): value is Locale {
   return (locales as readonly string[]).includes(value);
 }

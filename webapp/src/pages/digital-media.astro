@@ -1,7 +1,7 @@
 ---
-import { SOFT_LAUNCH } from '~/lib/launch';
-export const prerender = !SOFT_LAUNCH;
-if (SOFT_LAUNCH) return Astro.redirect('/', 302);
+import { isHidden } from '~/lib/launch';
+export const prerender = !isHidden('/digital-media');
+if (isHidden('/digital-media')) return Astro.redirect('/', 302);
 import DigitalMediaView from '~/components/views/DigitalMediaView.astro';
 ---
 <DigitalMediaView locale="en" />

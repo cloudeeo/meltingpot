@@ -1,10 +1,12 @@
 ---
-export const prerender = true;
+// SSR (not prerendered) so the actual requested URL is available at
+// render time — that's what `getLocaleFromUrl` needs in order to serve
+// the matching language for paths like `/fr/does-not-exist`. A
+// prerendered 404 always sees `/404` and would always render English.
+export const prerender = false;
 import NotFoundView from '~/components/views/NotFoundView.astro';
 import { getLocaleFromUrl } from '~/i18n';
 
-// One 404 serves every locale: derive the language from the requested URL
-// (e.g. /fr/does-not-exist renders the French chrome).
 const locale = getLocaleFromUrl(Astro.url);
 ---
 <NotFoundView locale={locale} />
