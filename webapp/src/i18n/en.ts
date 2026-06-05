@@ -81,6 +81,7 @@ const en = {
       { title: 'PMO & Programme Governance', body: 'Coordinating execution across initiatives.' },
       { title: 'Organisational Scaling', body: 'Building structures that grow with the business.' },
       { title: 'AI Governance & Adoption', body: 'Governing AI integration responsibly.' },
+      { title: 'Corporate Compliance with AI Frameworks', body: 'Aligning AI operations with ISO/IEC 42001, the EU AI Act and NIST AI RMF.' },
     ],
 
     modelEyebrow: 'Our model',
@@ -204,6 +205,15 @@ const en = {
           'AI governance and policy frameworks',
           'Shadow-AI assessment and remediation',
           'Responsible AI adoption roadmap',
+        ],
+      },
+      {
+        title: 'Corporate Compliance with AI Frameworks',
+        body: 'We help organisations meet their obligations under the emerging AI governance landscape — designing the controls, documentation and accountability needed for compliance with ISO/IEC 42001, the EU AI Act and the NIST AI Risk Management Framework.',
+        bullets: [
+          'ISO/IEC 42001 readiness and AI Management System design',
+          'EU AI Act compliance mapping and risk classification',
+          'NIST AI RMF integration and operationalisation',
         ],
       },
     ],
@@ -350,6 +360,174 @@ const en = {
     moreInfo: 'Read our privacy notice',
     acknowledge: 'Got it',
     closeAria: 'Dismiss notice',
+  },
+
+  aiGovernance: {
+    path: '/ai-governance',
+    seoTitle: 'AI Readiness & Governance Programme',
+    seoDescription:
+      'A governance-first, advisory-led programme that helps leadership teams make informed AI decisions before making AI investments — across opportunity assessment, governance framework and business case simulation.',
+    homeCtaLabel: 'Discover the AI Readiness & Governance Programme',
+
+    hero: {
+      eyebrow: 'Flagship programme',
+      title: 'AI Readiness & Governance Programme',
+      lede: 'Helping organisations adopt AI with clarity, governance and confidence.',
+      body:
+        'Executive Founders supports organisations in making informed AI decisions before making AI investments. The programme is governance-first, advisory-led and designed for leadership teams responsible for AI strategy and investment.',
+      primaryCta: 'Talk to us',
+      secondaryCta: 'See the three stages',
+    },
+
+    wrongWay: {
+      title: 'Most organisations are approaching AI the wrong way',
+      lede: 'They start with technology. They should start with governance.',
+      intro: 'Today, organisations are rapidly adopting AI solutions without a clear framework for:',
+      cards: [
+        { title: 'Governance', body: 'No structured policies or oversight for AI adoption.' },
+        { title: 'Accountability', body: 'Unclear ownership and responsibility across teams.' },
+        { title: 'Risk management', body: 'Uncontrolled exposure to operational and compliance risks.' },
+        { title: 'Operational integration', body: 'Fragmented adoption with no cohesive execution model.' },
+      ],
+      callout:
+        'The result is fragmented adoption, growing risks and unclear business value. We help organisations build the foundations required for responsible and scalable AI adoption.',
+    },
+
+    readiness: {
+      title: 'Why AI readiness matters',
+      lede: 'The challenge is not whether organisations will adopt AI. The challenge is whether they are prepared to do so successfully.',
+      cards: [
+        { title: 'Shadow AI practices', body: 'Unmanaged AI usage emerging across teams without oversight or controls.' },
+        { title: 'Uncontrolled data exposure', body: 'Sensitive data entering AI systems without proper governance or policies.' },
+        { title: 'Compliance risks', body: 'Regulatory and legal exposure from unstructured AI integration.' },
+        { title: 'Fragmented initiatives', body: 'Duplicated investments and unclear ownership across the organisation.' },
+        { title: 'Limited business impact', body: 'Experimentation that fails to translate into sustainable business value.' },
+      ],
+      callout:
+        'AI readiness creates the structure required to transform experimentation into sustainable business value.',
+    },
+
+    stages: {
+      eyebrow: 'Our approach',
+      title: 'Three stages. One objective.',
+      lede: 'Building the foundations for successful AI adoption.',
+      stages: [
+        {
+          number: '01',
+          title: 'AI opportunity assessment',
+          body: 'Identify where AI can create measurable business value across business processes, workflows and operations.',
+        },
+        {
+          number: '02',
+          title: 'AI governance framework',
+          body: 'Build the governance, ownership structures, policies and decision-making frameworks required for responsible adoption.',
+        },
+        {
+          number: '03',
+          title: 'AI business case simulation',
+          body: 'Evaluate implementation scenarios, investment requirements, expected benefits and ROI before committing.',
+        },
+      ],
+      callout:
+        'Understand where AI should be introduced, govern how it is adopted, and validate investment decisions based on facts rather than assumptions.',
+    },
+
+    governance: {
+      title: 'Why governance matters',
+      lede:
+        'Organisations are not exposed to AI risks because they use AI. They are exposed to AI risks because they use AI without governance.',
+      challengesHeading: 'Common challenges',
+      challenges: [
+        'Uncontrolled AI adoption',
+        'Shadow AI initiatives',
+        'Data security concerns',
+        'Compliance exposure',
+      ],
+      withoutHeading: 'Without structure',
+      without: [
+        'Fragmented technology choices',
+        'Inconsistent operational practices',
+        'Unclear accountability',
+        'Unmanaged risk exposure',
+      ],
+      callout:
+        'Governance is not a limitation. It is the foundation that enables AI to scale responsibly and sustainably.',
+    },
+
+    audience: {
+      title: 'Designed for decision makers',
+      lede: 'The programme is designed for the leaders responsible for AI strategy and investment decisions.',
+      cards: [
+        {
+          title: 'CEOs & general managers',
+          body: 'Setting the strategic direction for AI adoption across the organisation.',
+        },
+        {
+          title: 'Executive committees & board members',
+          body: 'Overseeing governance, risk and investment decisions at the highest level.',
+        },
+        {
+          title: 'Department heads & transformation leaders',
+          body: 'Leading operational integration and organisational change initiatives.',
+        },
+      ],
+      callout:
+        'The objective is simple: provide leadership teams with the clarity required to make confident AI decisions.',
+    },
+
+    engagement: {
+      title: 'Flexible engagement model',
+      lede: 'Organisations can engage with us through individual modules or the complete programme.',
+      modules: [
+        {
+          number: '01',
+          title: 'AI opportunity assessment',
+          body: 'Identify where AI can create measurable business value across your processes and operations.',
+        },
+        {
+          number: '02',
+          title: 'AI governance framework',
+          body: 'Build the governance structures, ownership models and policies required for responsible AI adoption.',
+        },
+        {
+          number: '03',
+          title: 'AI business case simulation',
+          body: 'Evaluate investment requirements, operational costs, expected benefits and ROI before making commitments.',
+        },
+      ],
+      bundleLabel: 'Complete programme',
+      bundle:
+        'A structured roadmap covering assessment, governance and investment readiness — delivered as a single integrated engagement.',
+    },
+
+    next: {
+      title: 'What happens next',
+      lede:
+        'Once readiness, governance and business viability have been established, organisations can move forward with confidence.',
+      cards: [
+        {
+          title: 'Coordinating transformation',
+          body: 'Structuring and overseeing the execution of AI transformation initiatives.',
+        },
+        {
+          title: 'Sustaining governance',
+          body: 'Maintaining governance structures and aligning stakeholders as adoption scales.',
+        },
+        {
+          title: 'Mobilising the right expertise',
+          body: 'Connecting organisations with the capabilities needed to execute successfully.',
+        },
+      ],
+      callout:
+        'We remain focused on governance, advisory and transformation leadership while ensuring organisations have access to the capabilities needed to execute successfully.',
+    },
+
+    closing: {
+      title: 'Start with governance. Scale with confidence.',
+      body:
+        'Whether you engage us for a single module or the complete programme, the outcome is the same — a leadership team able to make informed AI decisions before committing investment.',
+      button: 'Discuss your situation',
+    },
   },
 };
 

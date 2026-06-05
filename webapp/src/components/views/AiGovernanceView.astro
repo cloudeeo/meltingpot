@@ -1,0 +1,208 @@
+---
+import Base from '~/layouts/Base.astro';
+import { buildSeo } from '~/lib/seo';
+import { getDictionary, localizePath, type Locale } from '~/i18n';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const t = getDictionary(locale);
+const a = t.aiGovernance;
+
+const seo = buildSeo({
+  path: localizePath(a.path, locale),
+  locale,
+  title: a.seoTitle,
+  description: a.seoDescription,
+});
+
+const contactHref = localizePath('/contact', locale);
+---
+<Base seo={seo}>
+
+  <section class="page-hero">
+    <div class="container">
+      <p class="eyebrow">{a.hero.eyebrow}</p>
+      <h1>{a.hero.title}</h1>
+      <p class="page-lede">{a.hero.lede}</p>
+      <p style="max-width: 760px; margin-top: 16px;">{a.hero.body}</p>
+      <div class="hero-cta" style="margin-top: 24px;">
+        <a class="btn btn-primary" href={contactHref}>{a.hero.primaryCta}</a>
+        <a class="btn btn-ghost" href="#stages">{a.hero.secondaryCta}</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="wrong-way-title">
+    <div class="container">
+      <header class="section-head">
+        <h2 id="wrong-way-title">{a.wrongWay.title}</h2>
+        <p class="section-lede">{a.wrongWay.lede}</p>
+        <p style="margin-top: 8px;">{a.wrongWay.intro}</p>
+      </header>
+
+      <ul class="card-grid card-grid-2">
+        {a.wrongWay.cards.map((card) => (
+          <li class="card card-soft">
+            <h3>{card.title}</h3>
+            <p>{card.body}</p>
+          </li>
+        ))}
+      </ul>
+
+      <blockquote class="pullquote">
+        <p>{a.wrongWay.callout}</p>
+      </blockquote>
+    </div>
+  </section>
+
+  <section class="section section-light" aria-labelledby="readiness-title">
+    <div class="container">
+      <header class="section-head">
+        <h2 id="readiness-title">{a.readiness.title}</h2>
+        <p class="section-lede">{a.readiness.lede}</p>
+      </header>
+
+      <ul class="card-grid card-grid-3">
+        {a.readiness.cards.map((card) => (
+          <li class="card card-accent">
+            <h3>{card.title}</h3>
+            <p>{card.body}</p>
+          </li>
+        ))}
+      </ul>
+
+      <p class="callout callout-info" style="margin-top: 32px;">{a.readiness.callout}</p>
+    </div>
+  </section>
+
+  <section id="stages" class="section" aria-labelledby="stages-title">
+    <div class="container">
+      <header class="section-head">
+        <p class="eyebrow">{a.stages.eyebrow}</p>
+        <h2 id="stages-title">{a.stages.title}</h2>
+        <p class="section-lede">{a.stages.lede}</p>
+      </header>
+
+      <ol class="stage-list">
+        {a.stages.stages.map((stage) => (
+          <li class="stage-item">
+            <div class="stage-number" aria-hidden="true">{stage.number}</div>
+            <div class="stage-body">
+              <h3>{stage.title}</h3>
+              <p>{stage.body}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+
+      <p class="callout callout-strong" style="margin-top: 32px;">{a.stages.callout}</p>
+    </div>
+  </section>
+
+  <section class="section section-light" aria-labelledby="governance-title">
+    <div class="container">
+      <header class="section-head">
+        <h2 id="governance-title">{a.governance.title}</h2>
+        <p class="section-lede">{a.governance.lede}</p>
+      </header>
+
+      <div class="dual-list">
+        <div>
+          <h3>{a.governance.challengesHeading}</h3>
+          <ul>
+            {a.governance.challenges.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+        <div>
+          <h3>{a.governance.withoutHeading}</h3>
+          <ul>
+            {a.governance.without.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+      </div>
+
+      <p class="callout callout-info">{a.governance.callout}</p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="audience-title">
+    <div class="container">
+      <header class="section-head">
+        <h2 id="audience-title">{a.audience.title}</h2>
+        <p class="section-lede">{a.audience.lede}</p>
+      </header>
+
+      <ul class="card-grid card-grid-3">
+        {a.audience.cards.map((card) => (
+          <li class="card card-quiet">
+            <h3>{card.title}</h3>
+            <p>{card.body}</p>
+          </li>
+        ))}
+      </ul>
+
+      <blockquote class="pullquote">
+        <p>{a.audience.callout}</p>
+      </blockquote>
+    </div>
+  </section>
+
+  <section class="section section-light" aria-labelledby="engagement-title">
+    <div class="container">
+      <header class="section-head">
+        <h2 id="engagement-title">{a.engagement.title}</h2>
+        <p class="section-lede">{a.engagement.lede}</p>
+      </header>
+
+      <ol class="stage-list">
+        {a.engagement.modules.map((mod) => (
+          <li class="stage-item">
+            <div class="stage-number" aria-hidden="true">{mod.number}</div>
+            <div class="stage-body">
+              <h3>{mod.title}</h3>
+              <p>{mod.body}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+
+      <aside class="bundle-callout" role="note" style="margin-top: 28px;">
+        <p class="bundle-callout-label">{a.engagement.bundleLabel}</p>
+        <p>{a.engagement.bundle}</p>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="next-title">
+    <div class="container">
+      <header class="section-head">
+        <h2 id="next-title">{a.next.title}</h2>
+        <p class="section-lede">{a.next.lede}</p>
+      </header>
+
+      <ul class="card-grid card-grid-3">
+        {a.next.cards.map((card) => (
+          <li class="card card-soft">
+            <h3>{card.title}</h3>
+            <p>{card.body}</p>
+          </li>
+        ))}
+      </ul>
+
+      <blockquote class="pullquote">
+        <p>{a.next.callout}</p>
+      </blockquote>
+    </div>
+  </section>
+
+  <section class="section section-dark" aria-labelledby="closing-title">
+    <div class="container closing">
+      <h2 id="closing-title">{a.closing.title}</h2>
+      <p>{a.closing.body}</p>
+      <a class="btn btn-light" href={contactHref}>{a.closing.button}</a>
+    </div>
+  </section>
+
+</Base>

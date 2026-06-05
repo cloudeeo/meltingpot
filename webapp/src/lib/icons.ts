@@ -1,4 +1,4 @@
-export type IconKey = 'advisory' | 'governance' | 'pmo' | 'scale' | 'ai';
+export type IconKey = 'advisory' | 'governance' | 'pmo' | 'scale' | 'ai' | 'compliance';
 
 export const ICONS: Record<IconKey, string> = {
   advisory:
@@ -11,4 +11,6 @@ export const ICONS: Record<IconKey, string> = {
     '<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true"><path d="M4 26 14 16l6 6 8-10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 12h6v6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   ai:
     '<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true"><circle cx="16" cy="16" r="6" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M16 4v4m0 16v4M4 16h4m16 0h4M7 7l3 3m12 12 3 3M7 25l3-3m12-12 3-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>',
+  compliance:
+    '<svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true"><path d="M16 4 26 8v6c0 6-4 11-10 14-6-3-10-8-10-14V8l10-4Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M11 16l3.5 3.5L21 12" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>',
 };

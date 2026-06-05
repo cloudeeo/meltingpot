@@ -23,7 +23,7 @@ const h = t.home;
 const seo = buildSeo({ path: localizePath('/', locale), locale, description: t.meta.description });
 
 // Icons pair with `h.services` by index (icons are not translated).
-const serviceIcons: IconKey[] = ['advisory', 'governance', 'pmo', 'scale', 'ai'];
+const serviceIcons: IconKey[] = ['advisory', 'governance', 'pmo', 'scale', 'ai', 'compliance'];
 
 const latest = isHidden('/news')
   ? []
@@ -182,6 +182,12 @@ const secondaryCtaLabel = h.heroSecondary;
       </ul>
 
       <p class="callout callout-strong">{h.aiCallout}</p>
+
+      <p style="margin-top: 28px; text-align: center;">
+        <a class="btn btn-primary" href={localizePath(t.aiGovernance.path, locale)}>
+          {t.aiGovernance.homeCtaLabel}
+        </a>
+      </p>
     </div>
   </section>
 

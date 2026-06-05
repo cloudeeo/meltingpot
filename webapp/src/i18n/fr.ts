@@ -80,6 +80,7 @@ const fr: Dictionary = {
       { title: 'PMO et gouvernance de programme', body: "Coordonner l'exécution entre les initiatives." },
       { title: "Mise à l'échelle organisationnelle", body: "Construire des structures qui évoluent avec l'entreprise." },
       { title: "Gouvernance et adoption de l'IA", body: "Encadrer l'intégration de l'IA de manière responsable." },
+      { title: "Conformité aux cadres d'IA", body: "Aligner les opérations IA sur ISO/IEC 42001, le règlement européen sur l'IA et le NIST AI RMF." },
     ],
 
     modelEyebrow: 'Notre modèle',
@@ -203,6 +204,15 @@ const fr: Dictionary = {
           "Cadres de gouvernance et de politique de l'IA",
           "Évaluation et remédiation de l'IA fantôme",
           "Feuille de route d'adoption responsable de l'IA",
+        ],
+      },
+      {
+        title: "Conformité aux cadres d'IA",
+        body: "Nous aidons les organisations à répondre à leurs obligations face au paysage émergent de la gouvernance de l'IA — en concevant les contrôles, la documentation et les structures d'imputabilité requis pour la conformité avec ISO/IEC 42001, le règlement européen sur l'IA et le cadre de gestion des risques NIST AI RMF.",
+        bullets: [
+          "Préparation à ISO/IEC 42001 et conception du système de management de l'IA",
+          "Cartographie de conformité au règlement européen sur l'IA et classification des risques",
+          "Intégration et opérationnalisation du NIST AI RMF",
         ],
       },
     ],
@@ -349,6 +359,176 @@ const fr: Dictionary = {
     moreInfo: 'Lire notre politique de confidentialité',
     acknowledge: "J'ai compris",
     closeAria: 'Fermer la notice',
+  },
+
+  aiGovernance: {
+    path: '/ai-governance',
+    seoTitle: "Programme de préparation et gouvernance de l'IA",
+    seoDescription:
+      "Un programme guidé par la gouvernance et orienté conseil, qui aide les comités de direction à prendre des décisions IA éclairées avant d'investir — évaluation des opportunités, cadre de gouvernance et simulation de business case.",
+    homeCtaLabel: "Découvrir le programme de préparation et gouvernance de l'IA",
+
+    hero: {
+      eyebrow: 'Programme phare',
+      title: "Programme de préparation et gouvernance de l'IA",
+      lede: "Aider les organisations à adopter l'IA avec clarté, gouvernance et confiance.",
+      body:
+        "Executive Founders accompagne les organisations dans la prise de décisions IA éclairées avant tout investissement. Le programme est guidé par la gouvernance, orienté conseil, et conçu pour les comités de direction responsables de la stratégie IA et des décisions d'investissement.",
+      primaryCta: 'Nous contacter',
+      secondaryCta: 'Voir les trois étapes',
+    },
+
+    wrongWay: {
+      title: "La plupart des organisations abordent l'IA de la mauvaise manière",
+      lede: 'Elles commencent par la technologie. Elles devraient commencer par la gouvernance.',
+      intro:
+        "Aujourd'hui, les organisations adoptent rapidement des solutions d'IA sans cadre clair pour :",
+      cards: [
+        { title: 'Gouvernance', body: "Aucune politique structurée ni supervision de l'adoption de l'IA." },
+        { title: 'Imputabilité', body: 'Propriété et responsabilités floues entre les équipes.' },
+        { title: 'Gestion des risques', body: "Exposition non maîtrisée aux risques opérationnels et de conformité." },
+        { title: 'Intégration opérationnelle', body: "Adoption fragmentée sans modèle d'exécution cohérent." },
+      ],
+      callout:
+        "Le résultat : une adoption fragmentée, des risques croissants et une valeur métier incertaine. Nous aidons les organisations à poser les fondations nécessaires à une adoption de l'IA responsable et capable de passer à l'échelle.",
+    },
+
+    readiness: {
+      title: "Pourquoi la préparation à l'IA compte",
+      lede:
+        "La question n'est pas de savoir si les organisations vont adopter l'IA. La question est de savoir si elles sont préparées à le faire avec succès.",
+      cards: [
+        { title: "Pratiques d'IA fantôme", body: "Usage non maîtrisé de l'IA dans les équipes, sans supervision ni contrôles." },
+        { title: "Exposition de données non maîtrisée", body: "Données sensibles introduites dans des systèmes d'IA sans gouvernance ni politiques adaptées." },
+        { title: 'Risques de conformité', body: "Exposition réglementaire et juridique liée à une intégration de l'IA non structurée." },
+        { title: 'Initiatives fragmentées', body: "Investissements dupliqués et propriété floue à travers l'organisation." },
+        { title: 'Impact métier limité', body: "Expérimentations qui ne se traduisent pas en valeur métier durable." },
+      ],
+      callout:
+        "La préparation à l'IA crée la structure nécessaire pour transformer l'expérimentation en valeur métier durable.",
+    },
+
+    stages: {
+      eyebrow: 'Notre approche',
+      title: 'Trois étapes. Un objectif.',
+      lede: "Poser les fondations d'une adoption réussie de l'IA.",
+      stages: [
+        {
+          number: '01',
+          title: "Évaluation des opportunités d'IA",
+          body: "Identifier où l'IA peut créer une valeur métier mesurable dans vos processus, flux de travail et opérations.",
+        },
+        {
+          number: '02',
+          title: "Cadre de gouvernance de l'IA",
+          body: 'Construire la gouvernance, les structures de propriété, les politiques et les cadres de décision requis pour une adoption responsable.',
+        },
+        {
+          number: '03',
+          title: "Simulation du business case IA",
+          body: "Évaluer les scénarios de mise en œuvre, les besoins d'investissement, les bénéfices attendus et le ROI avant tout engagement.",
+        },
+      ],
+      callout:
+        "Comprendre où l'IA doit être introduite, gouverner son adoption et valider les décisions d'investissement sur la base de faits plutôt que d'hypothèses.",
+    },
+
+    governance: {
+      title: 'Pourquoi la gouvernance compte',
+      lede:
+        "Les organisations ne sont pas exposées aux risques de l'IA parce qu'elles utilisent l'IA. Elles y sont exposées parce qu'elles utilisent l'IA sans gouvernance.",
+      challengesHeading: 'Défis courants',
+      challenges: [
+        "Adoption non maîtrisée de l'IA",
+        "Initiatives d'IA fantôme",
+        'Préoccupations de sécurité des données',
+        'Exposition de conformité',
+      ],
+      withoutHeading: 'Sans structure',
+      without: [
+        'Choix technologiques fragmentés',
+        'Pratiques opérationnelles incohérentes',
+        'Imputabilité floue',
+        'Exposition au risque non maîtrisée',
+      ],
+      callout:
+        "La gouvernance n'est pas une limitation. C'est la fondation qui permet à l'IA de se déployer de manière responsable et durable.",
+    },
+
+    audience: {
+      title: 'Conçu pour les décideurs',
+      lede: "Le programme s'adresse aux dirigeants responsables de la stratégie IA et des décisions d'investissement.",
+      cards: [
+        {
+          title: 'Directrices et directeurs généraux',
+          body: "Définir l'orientation stratégique de l'adoption de l'IA dans l'organisation.",
+        },
+        {
+          title: "Comités de direction & membres du conseil d'administration",
+          body: "Superviser la gouvernance, les risques et les décisions d'investissement au plus haut niveau.",
+        },
+        {
+          title: 'Responsables de département & leaders de la transformation',
+          body: "Piloter l'intégration opérationnelle et la conduite du changement.",
+        },
+      ],
+      callout:
+        "L'objectif est simple : donner aux équipes dirigeantes la clarté nécessaire pour prendre des décisions IA en confiance.",
+    },
+
+    engagement: {
+      title: "Modèle d'engagement flexible",
+      lede: 'Les organisations peuvent nous engager sur un module isolé ou sur le programme complet.',
+      modules: [
+        {
+          number: '01',
+          title: "Évaluation des opportunités d'IA",
+          body: "Identifier où l'IA peut créer une valeur métier mesurable dans vos processus et opérations.",
+        },
+        {
+          number: '02',
+          title: "Cadre de gouvernance de l'IA",
+          body: "Construire les structures de gouvernance, les modèles de propriété et les politiques requis pour une adoption responsable de l'IA.",
+        },
+        {
+          number: '03',
+          title: "Simulation du business case IA",
+          body: "Évaluer les besoins d'investissement, les coûts opérationnels, les bénéfices attendus et le ROI avant tout engagement.",
+        },
+      ],
+      bundleLabel: 'Programme complet',
+      bundle:
+        "Une feuille de route structurée couvrant l'évaluation, la gouvernance et la préparation à l'investissement — livrée comme une mission intégrée unique.",
+    },
+
+    next: {
+      title: 'Et après ?',
+      lede:
+        'Une fois la préparation, la gouvernance et la viabilité métier établies, les organisations peuvent avancer en confiance.',
+      cards: [
+        {
+          title: 'Coordonner la transformation',
+          body: "Structurer et superviser l'exécution des initiatives de transformation IA.",
+        },
+        {
+          title: 'Faire vivre la gouvernance',
+          body: "Maintenir les structures de gouvernance et aligner les parties prenantes à mesure que l'adoption se déploie.",
+        },
+        {
+          title: 'Mobiliser la bonne expertise',
+          body: 'Mettre les organisations en relation avec les compétences nécessaires pour exécuter avec succès.',
+        },
+      ],
+      callout:
+        "Nous restons concentrés sur la gouvernance, le conseil et le pilotage de la transformation, tout en garantissant aux organisations l'accès aux compétences nécessaires à une exécution réussie.",
+    },
+
+    closing: {
+      title: 'Commencez par la gouvernance. Déployez en confiance.',
+      body:
+        "Que vous nous engagiez pour un module isolé ou pour le programme complet, le résultat est le même : un comité de direction capable de prendre des décisions IA éclairées avant tout engagement d'investissement.",
+      button: 'Discuter de votre situation',
+    },
   },
 };
 
