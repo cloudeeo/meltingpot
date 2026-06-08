@@ -1,0 +1,136 @@
+---
+export const prerender = false;
+import AdminLayout from '~/layouts/AdminLayout.astro';
+import { prisma } from '~/lib/db';
+
+const { id } = Astro.params as { id: string };
+
+const draft = await prisma.postDraft.findUnique({ where: { id } });
+
+if (!draft) {
+  return new Response('Draft not found', { status: 404 });
+}
+
+const fmtDate = (d: Date): string =>
+  new Intl.DateTimeFormat('en-GB', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(d);
+
+const publishedAtStr =
+  draft.publishedAt instanceof Date
+    ? draft.publishedAt.toISOString().slice(0, 10)
+    : '';
+
+const flashOk = Astro.url.searchParams.get('ok');
+const flashErr = Astro.url.searchParams.get('err');
+---
+<AdminLayout title={`Draft: ${draft.title}`}>
+  <p><a class="admin-back" href="/admin/drafts">← back to drafts</a></p>
+  <h1>{draft.title}</h1>
+  <p class="admin-card-meta" style="margin-bottom: 18px;">
+    <span>{fmtDate(draft.receivedAt)}</span>
+    <span>{draft.senderName ? `${draft.senderName} <${draft.senderEmail}>` : draft.senderEmail}</span>
+    <span>
+      <span class={`admin-pill admin-pill-${draft.status}`}>{draft.status}</span>
+    </span>
+  </p>
+
+  {flashOk && <div class="admin-flash admin-flash-ok">{flashOk}</div>}
+  {flashErr && <div class="admin-flash admin-flash-err">{flashErr}</div>}
+
+  {draft.parseNotes && (
+    <div class="admin-notes">
+      <strong>Parser notes:</strong>{'\n'}{draft.parseNotes}
+    </div>
+  )}
+
+  {draft.imageBytes && (
+    <img
+      class="admin-image-preview"
+      src={`/api/admin/drafts/${draft.id}/image`}
+      alt="Submitted hero image"
+    />
+  )}
+
+  <form method="post" action={`/api/admin/drafts/${draft.id}/approve`}>
+    <h2>Fields</h2>
+
+    <div class="admin-form-row">
+      <label for="locale">Locale</label>
+      <select id="locale" name="locale">
+        <option value="en" selected={draft.locale === 'en'}>en — English</option>
+        <option value="fr" selected={draft.locale === 'fr'}>fr — French</option>
+      </select>
+    </div>
+
+    <div class="admin-form-row">
+      <label for="slug">Slug (auto from title — edit to override)</label>
+      <input id="slug" name="slug" value={draft.slug} maxlength={160} />
+      <span class="help">Final URL will be /news/{`{slug}`} for EN, /fr/news/{`{slug}`} for FR.</span>
+    </div>
+
+    <div class="admin-form-row">
+      <label for="title">Title</label>
+      <input id="title" name="title" value={draft.title} maxlength={500} required />
+    </div>
+
+    <div class="admin-form-row">
+      <label for="description">Subtitle / lede</label>
+      <textarea id="description" name="description" rows={3} required>{draft.description}</textarea>
+    </div>
+
+    <div class="admin-form-row">
+      <label for="tags">Tags (comma-separated)</label>
+      <input id="tags" name="tags" value={draft.tags.join(', ')} />
+    </div>
+
+    <div class="admin-form-row">
+      <label for="publishedAt">Publication date (YYYY-MM-DD)</label>
+      <input id="publishedAt" name="publishedAt" type="date" value={publishedAtStr} />
+      <span class="help">Defaults to today if left blank when approved.</span>
+    </div>
+
+    <div class="admin-form-row">
+      <label for="body">Body (Markdown)</label>
+      <textarea id="body" name="body" rows={18} required>{draft.body}</textarea>
+    </div>
+
+    <div class="admin-form-row">
+      <label for="ctaHook">CTA hook</label>
+      <textarea id="ctaHook" name="ctaHook" rows={2}>{draft.ctaHook ?? ''}</textarea>
+    </div>
+
+    <div class="admin-form-row">
+      <label for="reviewerNote">Reviewer note (internal — kept in DB, not published)</label>
+      <input id="reviewerNote" name="reviewerNote" value={draft.reviewerNote ?? ''} />
+    </div>
+
+    <div class="admin-actions" style="margin-top: 24px;">
+      {draft.status === 'pending' ? (
+        <>
+          <button class="admin-btn admin-btn-success" type="submit">Approve &amp; export</button>
+          <button
+            class="admin-btn admin-btn-danger"
+            type="submit"
+            formaction={`/api/admin/drafts/${draft.id}/reject`}
+            formnovalidate
+          >Reject</button>
+        </>
+      ) : draft.status === 'approved' ? (
+        <>
+          <p style="margin: 0; color: var(--color-muted);">
+            Exported to <code>{draft.exportedPath ?? '(unknown path)'}</code>.
+            Pull from the server with the deploy/scripts/pull-drafts.sh helper.
+          </p>
+          <button class="admin-btn admin-btn-success" type="submit">Re-export with current fields</button>
+        </>
+      ) : (
+        <p style="margin: 0; color: var(--color-muted);">Draft is rejected. Re-approve to export.</p>
+      )}
+    </div>
+  </form>
+</AdminLayout>

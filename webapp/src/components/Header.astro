@@ -38,8 +38,22 @@ const isCurrent = (href: string) => {
     <nav class="main-navigation" id="main-navigation" aria-label={t.header.primaryNav}>
       <ul class="nav-menu">
         {nav.map((item) => (
-          <li>
-            <a href={item.href} class={isCurrent(item.href) ? 'is-current' : ''}>{item.label}</a>
+          <li class={item.children ? 'nav-item has-children' : 'nav-item'}>
+            <a href={item.href} class={isCurrent(item.href) ? 'is-current' : ''}>
+              {item.label}
+              {item.children && <span class="nav-caret" aria-hidden="true">▾</span>}
+            </a>
+            {item.children && (
+              <ul class="nav-submenu" aria-label={item.label}>
+                {item.children.map((child) => (
+                  <li>
+                    <a href={child.href} class={isCurrent(child.href) ? 'is-current' : ''}>
+                      {child.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
           </li>
         ))}
       </ul>

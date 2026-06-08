@@ -2,7 +2,7 @@
 import Base from '~/layouts/Base.astro';
 import Icon from '~/components/Icon.astro';
 import { buildSeo } from '~/lib/seo';
-import { getDictionary, localizePath, type Locale } from '~/i18n';
+import { getDictionary, localizePath, getNav, type Locale } from '~/i18n';
 import type { IconKey } from '~/lib/icons';
 
 interface Props {
@@ -21,6 +21,13 @@ const seo = buildSeo({
 
 // Icons pair with `s.items` by index (icons are not translated).
 const serviceIcons: IconKey[] = ['advisory', 'governance', 'pmo', 'scale', 'ai', 'compliance'];
+
+// Resolve the URL for each service from the Services nav entry, so
+// the hub, the menu and the home cards all stay in sync via a single
+// source of truth.
+const nav = getNav(locale);
+const servicesItem = nav.find((item) => item.key === 'services');
+const childHref = (i: number): string => servicesItem?.children?.[i]?.href ?? '#';
 ---
 <Base seo={seo}>
   <section class="page-hero">
@@ -33,17 +40,15 @@ const serviceIcons: IconKey[] = ['advisory', 'governance', 'pmo', 'scale', 'ai',
 
   <section class="section">
     <div class="container">
-      <ul class="service-list service-list-detailed">
+      <ul class="card-grid card-grid-2 service-hub-grid">
         {s.items.map((item, i) => (
-          <li class="service-item-detailed">
-            <header class="service-item-header">
+          <li>
+            <a class="service-hub-card" href={childHref(i)}>
               <span class="service-icon" aria-hidden="true"><Icon name={serviceIcons[i]} /></span>
               <h2>{item.title}</h2>
-            </header>
-            <p>{item.body}</p>
-            <ul class="bullet-list">
-              {item.bullets.map((b) => <li>{b}</li>)}
-            </ul>
+              <p>{item.body}</p>
+              <span class="service-hub-link" aria-hidden="true">{s.learnMore}</span>
+            </a>
           </li>
         ))}
       </ul>

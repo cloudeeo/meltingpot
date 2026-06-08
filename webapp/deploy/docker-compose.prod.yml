@@ -44,6 +44,18 @@ services:
       CONTACT_NOTIFY_TO: ${CONTACT_NOTIFY_TO:-}
       TURNSTILE_SITE_KEY: ${TURNSTILE_SITE_KEY:-}
       TURNSTILE_SECRET_KEY: ${TURNSTILE_SECRET_KEY:-}
+      # IMAP inbox the cron container polls for copywriter submissions.
+      IMAP_HOST: ${IMAP_HOST:-imap.gmail.com}
+      IMAP_PORT: ${IMAP_PORT:-993}
+      IMAP_USER: ${IMAP_USER:-}
+      IMAP_APP_PASSWORD: ${IMAP_APP_PASSWORD:-}
+      ALLOWLIST_SENDERS: ${ALLOWLIST_SENDERS:-}
+      # Shared secret used by the cron container to call /api/cron/fetch-drafts.
+      CRON_SECRET: ${CRON_SECRET:-}
+      # Where approved drafts get exported (volume shared with the host).
+      DRAFTS_EXPORT_DIR: /data/drafts-export
+    volumes:
+      - drafts_export:/data/drafts-export
     depends_on:
       postgres:
         condition: service_healthy
@@ -63,22 +75,28 @@ services:
     command: >
       -c "
         apk add --no-cache postgresql-client &&
-        echo '0 2 * * * /scripts/backup-db.sh >> /var/log/cron.log 2>&1' | crontab - &&
+        printf '%s\n%s\n' \
+          '0 2 * * * /scripts/backup-db.sh >> /var/log/cron.log 2>&1' \
+          '*/5 * * * * /scripts/poll-drafts.sh >> /var/log/cron.log 2>&1' \
+          | crontab - &&
         crond -f -l 2
       "
     environment:
       PGPASSWORD: ${DB_PASSWORD}
+      CRON_SECRET: ${CRON_SECRET:-}
     volumes:
       - ./cron:/scripts:ro
       - db_backups:/backups
     depends_on:
       - postgres
+      - app
     networks:
       - internal
 
 volumes:
   postgres_data:
   db_backups:
+  drafts_export:
 
 networks:
   internal:

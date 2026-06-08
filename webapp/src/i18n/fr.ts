@@ -14,10 +14,22 @@ const fr: Dictionary = {
 
   nav: {
     items: [
-      { key: 'services', label: 'Services', path: '/services' },
+      {
+        key: 'services',
+        label: 'Services',
+        path: '/services',
+        children: [
+          { key: 'strategic-advisory', label: 'Conseil stratégique', path: '/services/strategic-advisory' },
+          { key: 'governance-operational-leadership', label: 'Gouvernance et leadership opérationnel', path: '/services/governance-operational-leadership' },
+          { key: 'pmo-programme-governance', label: 'PMO et gouvernance de programme', path: '/services/pmo-programme-governance' },
+          { key: 'organisational-scaling', label: "Mise à l'échelle organisationnelle", path: '/services/organisational-scaling' },
+          { key: 'ai-governance-adoption', label: "Gouvernance et adoption de l'IA", path: '/ai-governance' },
+          { key: 'compliance-ai-frameworks', label: "Conformité aux cadres d'IA", path: '/services/corporate-compliance-ai-frameworks' },
+        ],
+      },
       { key: 'portfolio', label: 'Réalisations', path: '/portfolio' },
       { key: 'digital-media', label: 'Médias', path: '/digital-media' },
-      { key: 'news', label: 'Actualités', path: '/news' },
+      { key: 'news', label: 'Analyses', path: '/news' },
       { key: 'about', label: 'À propos', path: '/about' },
       { key: 'contact', label: 'Contact', path: '/contact' },
     ],
@@ -149,17 +161,19 @@ const fr: Dictionary = {
       "Executive Founders intervient aux côtés des équipes de direction pour aider les organisations à structurer leur transformation, coordonner leur exécution et se développer durablement dans le temps. Nous offrons un conseil stratégique et opérationnel conçu pour apporter clarté, alignement et gouvernance aux organisations en croissance et en transformation.",
     closingButton: 'Discuter de votre situation',
 
-    latestTitle: 'Derniers articles',
-    latestAll: 'Toutes les actualités →',
+    latestTitle: 'Dernières analyses',
+    latestAll: 'Toutes les analyses →',
   },
 
   services: {
     seoTitle: 'Services',
     seoDescription:
-      "Conseil stratégique, gouvernance, PMO, mise à l'échelle organisationnelle et gouvernance de l'IA — les cinq domaines dans lesquels Executive Founders crée un impact organisationnel durable.",
+      "Conseil stratégique, gouvernance, PMO, mise à l'échelle organisationnelle, gouvernance de l'IA et conformité aux cadres d'IA — six domaines dans lesquels Executive Founders crée un impact organisationnel durable.",
     eyebrow: 'Ce que nous faisons',
     title: 'Conseil stratégique, gouvernance et leadership opérationnel',
-    lede: "Nous concevons et pilotons les structures qui transforment la stratégie en exécution — de la gouvernance et l'orchestration du PMO à l'adoption de l'IA et la mise à l'échelle organisationnelle.",
+    lede: "Nous concevons et pilotons les structures qui transforment la stratégie en exécution — de la gouvernance et l'orchestration du PMO à l'adoption de l'IA, la mise à l'échelle organisationnelle et la conformité aux cadres d'IA émergents.",
+    learnMore: 'En savoir plus →',
+    placeholderNote: 'Le contenu détaillé de ce service sera prochainement publié. La description ci-dessus en résume la portée.',
     items: [
       {
         title: 'Conseil stratégique',
@@ -310,14 +324,14 @@ const fr: Dictionary = {
   },
 
   news: {
-    seoTitle: 'Actualités et analyses',
+    seoTitle: 'Analyses',
     seoDescription:
       "Perspectives sur la gouvernance, la transformation, le leadership et la mise à l'échelle opérationnelle — issues de missions réelles, pas de la théorie.",
-    eyebrow: 'Actualités et analyses',
+    eyebrow: 'Analyses',
     title: 'Perspectives de terrain',
     lede: "Articles, observations et cadres sur la gouvernance, la transformation, le leadership et la mise à l'échelle opérationnelle.",
-    empty: 'Aucun article pour le moment. Revenez bientôt pour des nouveautés.',
-    rssTitle: 'Actualités et analyses',
+    empty: 'Aucune analyse pour le moment. Revenez bientôt pour des nouveautés.',
+    rssTitle: 'Analyses',
   },
 
   notFound: {

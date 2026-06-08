@@ -1,0 +1,21 @@
+---
+export const prerender = true;
+import { getCollection } from 'astro:content';
+import ServiceDetailView from '~/components/views/ServiceDetailView.astro';
+import { filterByLocale, contentSlug } from '~/lib/content';
+
+export async function getStaticPaths() {
+  const docs = filterByLocale(
+    await getCollection('services', ({ data }) => !data.draft),
+    'fr',
+  );
+  return docs.map((doc) => ({
+    params: { slug: contentSlug(doc.id) },
+    props: { doc },
+  }));
+}
+
+const { doc } = Astro.props;
+const slug = contentSlug(doc.id);
+---
+<ServiceDetailView doc={doc} locale="fr" path={`/services/${slug}`} />

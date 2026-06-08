@@ -886,9 +886,24 @@ ul, ol { color: var(--color-muted); }
   .image-band-text { max-width: 100%; }
 
   .menu-toggle { display: inline-block; }
+
+  /* Disable backdrop-filter on the header at mobile widths. iOS Safari
+     visually clips fixed-positioned descendants of an element that has
+     `backdrop-filter`, which prevented the nav drawer from rendering
+     below the header. With a solid background here, the issue is gone. */
+  .site-header {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: #fff;
+  }
+
   .main-navigation {
     position: fixed;
-    inset: var(--header-h) 0 0 0;
+    top: var(--header-h);
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 99;
     background: #fff;
     flex-direction: column;
     align-items: stretch;
@@ -1142,4 +1157,192 @@ ul, ol { color: var(--color-muted); }
   .stage-number {
     font-size: 1.5rem;
   }
+}
+
+/* ==========================================================================
+   Nav dropdown (desktop) + nested children (mobile drawer)
+   ========================================================================== */
+.nav-menu .nav-item { position: relative; }
+
+.nav-caret {
+  display: inline-block;
+  margin-left: 4px;
+  font-size: 0.7em;
+  transform: translateY(-1px);
+  transition: transform var(--t);
+}
+.nav-item.has-children:hover .nav-caret,
+.nav-item.has-children:focus-within .nav-caret { transform: translateY(-1px) rotate(180deg); }
+
+.nav-submenu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  min-width: 280px;
+  list-style: none;
+  margin: 0;
+  padding: 8px;
+  background: #fff;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  z-index: 101;
+}
+.nav-submenu li { margin: 0; }
+.nav-submenu a {
+  display: block;
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-ink-2);
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+}
+.nav-submenu a::after { display: none; } /* don't draw the desktop underline */
+.nav-submenu a:hover,
+.nav-submenu a.is-current {
+  color: var(--color-accent);
+  background: var(--color-accent-soft);
+}
+
+/* Reveal on hover or keyboard focus. */
+.nav-item.has-children:hover > .nav-submenu,
+.nav-item.has-children:focus-within > .nav-submenu {
+  display: block;
+}
+
+/* Mobile drawer: render children inline, indented, no dropdown chrome. */
+@media (max-width: 720px) {
+  .nav-caret { display: none; }
+  .nav-submenu {
+    display: block;
+    position: static;
+    transform: none;
+    min-width: 0;
+    padding: 0 0 0 16px;
+    margin: 0 0 6px;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+  }
+  .nav-submenu li { border-bottom: 1px solid var(--color-line); }
+  .nav-submenu li:last-child { border-bottom: 0; }
+  .nav-submenu a {
+    padding: 12px 0;
+    font-size: 0.98rem;
+    color: var(--color-muted);
+    border-radius: 0;
+  }
+  .nav-submenu a:hover,
+  .nav-submenu a.is-current {
+    background: transparent;
+    color: var(--color-accent);
+  }
+}
+
+/* ==========================================================================
+   Services hub (cards) + service detail layout
+   ========================================================================== */
+.service-hub-grid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.service-hub-card {
+  display: block;
+  height: 100%;
+  padding: 28px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-line);
+  border-left: 4px solid var(--color-accent);
+  border-radius: var(--radius-md);
+  color: inherit;
+  transition: transform var(--t), box-shadow var(--t), border-color var(--t);
+}
+.service-hub-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  color: inherit;
+}
+.service-hub-card .service-icon {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 16px;
+}
+.service-hub-card .service-icon svg { width: 26px; height: 26px; }
+.service-hub-card h2 {
+  font-size: 1.2rem;
+  margin: 0 0 8px;
+  color: var(--color-ink);
+}
+.service-hub-card p {
+  font-size: 0.97rem;
+  margin: 0 0 16px;
+  color: var(--color-muted);
+}
+.service-hub-link {
+  display: inline-block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-accent);
+}
+.service-hub-card:hover .service-hub-link { color: var(--color-accent-dark); }
+
+/* Service detail page — placeholder layout */
+.service-detail-grid {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 40px;
+  align-items: start;
+}
+.service-placeholder-art {
+  margin: 0;
+  padding: 32px;
+  background: var(--color-bg-soft);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.service-prose { max-width: 720px; }
+.service-placeholder-note {
+  margin-top: 32px;
+  padding: 14px 18px;
+  background: #FEF7E0;
+  color: #6B5300;
+  border: 1px solid #F2D77A;
+  border-left: 4px solid #C89B1A;
+  border-radius: var(--radius-md);
+  font-size: 0.92rem;
+  line-height: 1.55;
+}
+
+/* Clickable home-page service items (link wrapper around existing service-item layout) */
+.service-item-link {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  color: inherit;
+  text-decoration: none;
+  border-radius: var(--radius-md);
+  padding: 4px;
+  margin: -4px;
+  transition: background var(--t), transform var(--t);
+}
+.service-item-link:hover {
+  background: var(--color-accent-soft);
+  color: inherit;
+}
+.service-item-link:hover h3 { color: var(--color-accent); }
+.service-item-link h3,
+.service-item-link p { transition: color var(--t); }
+
+@media (max-width: 720px) {
+  .service-detail-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .service-placeholder-art { padding: 24px; }
 }

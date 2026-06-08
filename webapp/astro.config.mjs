@@ -15,7 +15,6 @@ const LOCALES = ['en', 'fr'];
 // config is a .mjs file that cannot import the TypeScript module.
 const SOFT_LAUNCH = true;
 const HIDDEN_ROUTES = [
-  '/services',
   '/portfolio',
   '/digital-media',
   '/about',

@@ -65,4 +65,17 @@ const legal = defineCollection({
   }),
 });
 
-export const collections = { posts, caseStudies, videos, legal };
+const services = defineCollection({
+  loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/services' }),
+  schema: z.object({
+    title: z.string(),
+    /** Short tagline shown under the title and on the listing card. */
+    lede: z.string(),
+    /** Position in the listing (lower = earlier). */
+    order: z.number().default(0),
+    /** Hide from build without deleting the file. */
+    draft: z.boolean().default(false),
+  }),
+});
+
+export const collections = { posts, caseStudies, videos, legal, services };

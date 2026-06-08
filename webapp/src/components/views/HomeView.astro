@@ -10,7 +10,7 @@ import { getCollection } from 'astro:content';
 import { SITE } from '~/lib/site';
 import { isHidden } from '~/lib/launch';
 import { filterByLocale } from '~/lib/content';
-import { getDictionary, localizePath, type Locale } from '~/i18n';
+import { getDictionary, getNav, localizePath, type Locale } from '~/i18n';
 import type { IconKey } from '~/lib/icons';
 
 interface Props {
@@ -24,6 +24,12 @@ const seo = buildSeo({ path: localizePath('/', locale), locale, description: t.m
 
 // Icons pair with `h.services` by index (icons are not translated).
 const serviceIcons: IconKey[] = ['advisory', 'governance', 'pmo', 'scale', 'ai', 'compliance'];
+
+// Service-card hrefs come from the Services nav entry — single source
+// of truth so the menu, the hub page and the home cards stay in sync.
+const navItems = getNav(locale);
+const servicesNav = navItems.find((item) => item.key === 'services');
+const serviceHref = (i: number): string => servicesNav?.children?.[i]?.href ?? '#';
 
 const latest = isHidden('/news')
   ? []
@@ -101,11 +107,13 @@ const secondaryCtaLabel = h.heroSecondary;
       <ul class="service-list">
         {h.services.map((s, i) => (
           <li class="service-item">
-            <span class="service-icon" aria-hidden="true"><Icon name={serviceIcons[i]} /></span>
-            <div>
-              <h3>{s.title}</h3>
-              <p>{s.body}</p>
-            </div>
+            <a class="service-item-link" href={serviceHref(i)}>
+              <span class="service-icon" aria-hidden="true"><Icon name={serviceIcons[i]} /></span>
+              <div>
+                <h3>{s.title}</h3>
+                <p>{s.body}</p>
+              </div>
+            </a>
           </li>
         ))}
       </ul>

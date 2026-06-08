@@ -45,18 +45,45 @@ export interface LocalizedNavItem {
   key: string;
   label: string;
   href: string;
+  children?: LocalizedNavItem[];
+}
+
+interface RawNavChild {
+  key: string;
+  label: string;
+  path: string;
+}
+
+interface RawNavItem extends RawNavChild {
+  children?: readonly RawNavChild[];
 }
 
 /**
  * Primary navigation for a locale, with hrefs already localized and the
- * soft-launch hidden routes filtered out (matching the previous
- * behaviour in `src/lib/site.ts`).
+ * soft-launch hidden routes filtered out. Items may carry a `children`
+ * array (for dropdown / submenu support); hidden children are filtered
+ * out the same way as top-level items.
  */
 export function getNav(locale: Locale): LocalizedNavItem[] {
   const t = getDictionary(locale);
-  return t.nav.items
+  const items = t.nav.items as readonly RawNavItem[];
+  return items
     .filter((item) => !isHidden(item.path))
-    .map((item) => ({ key: item.key, label: item.label, href: localizePath(item.path, locale) }));
+    .map((item) => {
+      const children = item.children
+        ?.filter((c) => !isHidden(c.path))
+        .map((c) => ({
+          key: c.key,
+          label: c.label,
+          href: localizePath(c.path, locale),
+        }));
+      return {
+        key: item.key,
+        label: item.label,
+        href: localizePath(item.path, locale),
+        ...(children && children.length ? { children } : {}),
+      };
+    });
 }
 
 export function getCta(locale: Locale): { label: string; href: string } {

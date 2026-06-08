@@ -237,6 +237,19 @@ TMPNGINX
     fi
 fi
 
+# Refresh the Basic Auth htpasswd file for /admin/* from .env.production.
+# We use the `openssl passwd -apr1` form to avoid depending on apache2-utils.
+echo "    Refreshing admin Basic Auth credentials..."
+ADMIN_USER=$(grep "^ADMIN_BASIC_AUTH_USER=" "${APP_DIR}/deploy/.env.production" 2>/dev/null | cut -d'=' -f2- | tr -d '"' | tr -d "'")
+ADMIN_PASS=$(grep "^ADMIN_BASIC_AUTH_PASS=" "${APP_DIR}/deploy/.env.production" 2>/dev/null | cut -d'=' -f2- | tr -d '"' | tr -d "'")
+if [[ -z "${ADMIN_USER}" || -z "${ADMIN_PASS}" ]]; then
+    echo "    WARNING: ADMIN_BASIC_AUTH_USER / ADMIN_BASIC_AUTH_PASS not set; /admin/* will be unreachable until they are."
+else
+    HASHED=$(openssl passwd -apr1 "${ADMIN_PASS}")
+    echo "${ADMIN_USER}:${HASHED}" | sudo tee /etc/nginx/htpasswd-ef-admin > /dev/null
+    sudo chmod 640 /etc/nginx/htpasswd-ef-admin
+fi
+
 # Only install the real HTTPS config once we have a cert on disk. This
 # avoids leaving nginx in a broken state if certbot fails on a fresh box.
 echo "    Installing nginx vhost for ${DOMAIN}..."

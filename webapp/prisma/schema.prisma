@@ -49,3 +49,49 @@ model AdminUser {
 
   @@map("admin_users")
 }
+
+/// Inbound Insights drafts submitted by allowlisted copywriters via
+/// the drafts@executivefounders.com inbox. The cron container polls
+/// IMAP every few minutes and inserts new emails here for editorial
+/// review at /admin/drafts.
+model PostDraft {
+  id                String    @id @default(uuid()) @db.Uuid
+  receivedAt        DateTime  @default(now()) @map("received_at") @db.Timestamptz(6)
+
+  // Email envelope (used for idempotency + audit)
+  messageId         String    @unique @map("message_id") @db.VarChar(998)
+  senderEmail       String    @map("sender_email") @db.VarChar(320)
+  senderName        String?   @map("sender_name") @db.VarChar(200)
+  emailSubject      String?   @map("email_subject") @db.VarChar(998)
+
+  // Parsed brief — these mirror the copywriter template fields.
+  // All editable in the admin UI before approval.
+  locale            String    @default("en") @db.VarChar(8)
+  slug              String    @db.VarChar(160)
+  title             String    @db.VarChar(500)
+  description       String    @db.Text
+  body              String    @db.Text
+  tags              String[]  @default([])
+  ctaHook           String?   @map("cta_hook") @db.Text
+  publishedAt       DateTime? @map("requested_published_at") @db.Date
+  imageBrief        String?   @map("image_brief") @db.Text
+
+  // Optional hero image submitted alongside the .md
+  imageFilename     String?   @map("image_filename") @db.VarChar(255)
+  imageMimeType    String?    @map("image_mime_type") @db.VarChar(64)
+  imageBytes        Bytes?    @map("image_bytes")
+
+  // Free-text parse diagnostics (e.g. "no body field found, used the
+  // whole email text as body").
+  parseNotes        String?   @map("parse_notes") @db.Text
+
+  // Review workflow.
+  status            String    @default("pending") @db.VarChar(32)
+  // ^ pending | approved | rejected
+  reviewerNote      String?   @map("reviewer_note") @db.Text
+  reviewedAt        DateTime? @map("reviewed_at") @db.Timestamptz(6)
+  exportedPath      String?   @map("exported_path") @db.Text
+
+  @@index([status, receivedAt])
+  @@map("post_drafts")
+}

@@ -24,12 +24,15 @@
     "@prisma/client": "^7.6.0",
     "astro": "^5.0.0",
     "dotenv": "^17.4.0",
+    "imapflow": "^1.0.190",
+    "mailparser": "^3.7.4",
     "nodemailer": "^7.0.0",
     "pg": "^8.20.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.0.0",
+    "@types/mailparser": "^3.4.6",
     "@types/node": "^20.11.0",
     "@types/nodemailer": "^7.0.0",
     "@types/pg": "^8.11.0",

@@ -1,0 +1,84 @@
+---
+export const prerender = false;
+import AdminLayout from '~/layouts/AdminLayout.astro';
+import { prisma } from '~/lib/db';
+
+const statusFilter = (Astro.url.searchParams.get('status') ?? 'pending').toLowerCase();
+const allowedStatuses = new Set(['pending', 'approved', 'rejected', 'all']);
+const status = allowedStatuses.has(statusFilter) ? statusFilter : 'pending';
+
+const drafts = await prisma.postDraft.findMany({
+  where: status === 'all' ? {} : { status },
+  orderBy: { receivedAt: 'desc' },
+  select: {
+    id: true,
+    receivedAt: true,
+    senderEmail: true,
+    senderName: true,
+    locale: true,
+    slug: true,
+    title: true,
+    description: true,
+    tags: true,
+    status: true,
+    imageFilename: true,
+  },
+});
+
+const pendingCount = await prisma.postDraft.count({ where: { status: 'pending' } });
+
+const fmtDate = (d: Date): string =>
+  new Intl.DateTimeFormat('en-GB', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(d);
+
+const flashOk = Astro.url.searchParams.get('ok');
+const flashErr = Astro.url.searchParams.get('err');
+---
+<AdminLayout title="Drafts">
+  <h1>Insights drafts</h1>
+  <p>
+    {pendingCount === 0
+      ? 'No pending drafts.'
+      : `${pendingCount} draft${pendingCount === 1 ? '' : 's'} awaiting review.`}
+  </p>
+
+  {flashOk && <div class="admin-flash admin-flash-ok">{flashOk}</div>}
+  {flashErr && <div class="admin-flash admin-flash-err">{flashErr}</div>}
+
+  <nav class="admin-actions" style="margin: 18px 0 24px;">
+    <a class={`admin-btn ${status === 'pending' ? 'admin-btn-primary' : ''}`} href="?status=pending">Pending</a>
+    <a class={`admin-btn ${status === 'approved' ? 'admin-btn-primary' : ''}`} href="?status=approved">Approved</a>
+    <a class={`admin-btn ${status === 'rejected' ? 'admin-btn-primary' : ''}`} href="?status=rejected">Rejected</a>
+    <a class={`admin-btn ${status === 'all' ? 'admin-btn-primary' : ''}`} href="?status=all">All</a>
+  </nav>
+
+  {drafts.length === 0 ? (
+    <div class="admin-empty">Nothing here.</div>
+  ) : (
+    drafts.map((d) => (
+      <article class="admin-card">
+        <p class="admin-card-meta">
+          <span>{fmtDate(d.receivedAt)}</span>
+          <span>{d.senderName ? `${d.senderName} <${d.senderEmail}>` : d.senderEmail}</span>
+          <span>{d.locale.toUpperCase()}</span>
+          {d.imageFilename && <span>📎 image attached</span>}
+          <span>
+            <span class={`admin-pill admin-pill-${d.status}`}>{d.status}</span>
+          </span>
+        </p>
+        <h3 class="admin-card-title">
+          <a href={`/admin/drafts/${d.id}`}>{d.title}</a>
+        </h3>
+        <p style="color: var(--color-muted); margin-bottom: 8px;">{d.description}</p>
+        <p style="font-size: 0.85em; color: var(--color-muted);">
+          /news/{d.slug}{d.tags.length > 0 && ' · '}{d.tags.join(', ')}
+        </p>
+      </article>
+    ))
+  )}
+</AdminLayout>

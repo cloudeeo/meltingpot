@@ -15,10 +15,22 @@ const en = {
 
   nav: {
     items: [
-      { key: 'services', label: 'Services', path: '/services' },
+      {
+        key: 'services',
+        label: 'Services',
+        path: '/services',
+        children: [
+          { key: 'strategic-advisory', label: 'Strategic Advisory', path: '/services/strategic-advisory' },
+          { key: 'governance-operational-leadership', label: 'Governance & Operational Leadership', path: '/services/governance-operational-leadership' },
+          { key: 'pmo-programme-governance', label: 'PMO & Programme Governance', path: '/services/pmo-programme-governance' },
+          { key: 'organisational-scaling', label: 'Organisational Scaling', path: '/services/organisational-scaling' },
+          { key: 'ai-governance-adoption', label: 'AI Governance & Adoption', path: '/ai-governance' },
+          { key: 'compliance-ai-frameworks', label: 'Corporate Compliance with AI Frameworks', path: '/services/corporate-compliance-ai-frameworks' },
+        ],
+      },
       { key: 'portfolio', label: 'Portfolio', path: '/portfolio' },
       { key: 'digital-media', label: 'Digital Media', path: '/digital-media' },
-      { key: 'news', label: 'News', path: '/news' },
+      { key: 'news', label: 'Insights', path: '/news' },
       { key: 'about', label: 'About', path: '/about' },
       { key: 'contact', label: 'Contact', path: '/contact' },
     ],
@@ -151,16 +163,18 @@ const en = {
     closingButton: 'Discuss your situation',
 
     latestTitle: 'Latest insights',
-    latestAll: 'All news →',
+    latestAll: 'All insights →',
   },
 
   services: {
     seoTitle: 'Services',
     seoDescription:
-      'Strategic advisory, governance, PMO, organisational scaling and AI governance — the five areas where Executive Founders creates lasting organisational impact.',
+      'Strategic advisory, governance, PMO, organisational scaling, AI governance and corporate compliance with AI frameworks — six areas where Executive Founders creates lasting organisational impact.',
     eyebrow: 'What we do',
     title: 'Strategic advisory, governance and operational leadership',
-    lede: 'We design and steer the structures that turn strategy into execution — from governance and PMO orchestration to AI adoption and organisational scaling.',
+    lede: 'We design and steer the structures that turn strategy into execution — from governance and PMO orchestration to AI adoption, organisational scaling and compliance with the emerging AI frameworks.',
+    learnMore: 'Learn more →',
+    placeholderNote: 'Detailed content for this service is coming soon. In the meantime, the short description above outlines the scope.',
     items: [
       {
         title: 'Strategic Advisory',
@@ -311,14 +325,14 @@ const en = {
   },
 
   news: {
-    seoTitle: 'News & insights',
+    seoTitle: 'Insights',
     seoDescription:
       'Perspectives on governance, transformation, leadership and operational scaling — from engagements, not from theory.',
-    eyebrow: 'News & insights',
+    eyebrow: 'Insights',
     title: 'Perspectives from the field',
     lede: 'Articles, observations and frameworks on governance, transformation, leadership and operational scaling.',
     empty: 'No posts yet. Check back soon for updates.',
-    rssTitle: 'News & insights',
+    rssTitle: 'Insights',
   },
 
   notFound: {

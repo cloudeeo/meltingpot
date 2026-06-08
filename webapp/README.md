@@ -71,6 +71,23 @@ CONTACT_NOTIFY_TO=<your-alias>@executivefounders.com
 # Optional spam protection
 TURNSTILE_SITE_KEY=
 TURNSTILE_SECRET_KEY=
+
+# Insights drafts pipeline — IMAP poll of drafts@executivefounders.com.
+# See "Insights drafts pipeline" below for the full flow.
+IMAP_HOST=imap.gmail.com
+IMAP_PORT=993
+IMAP_USER=drafts@executivefounders.com
+IMAP_APP_PASSWORD=<16-char-app-password-no-spaces>
+# Comma-separated list of allowed sender emails. Any message from another
+# address is left untouched in the inbox.
+ALLOWLIST_SENDERS=copywriter@example.com,editor@executivefounders.com
+# Shared secret between the cron container and /api/cron/fetch-drafts.
+CRON_SECRET=xxxxxxxx
+
+# /admin/* HTTP Basic Auth (rendered to /etc/nginx/htpasswd-ef-admin by
+# deploy.sh on each run).
+ADMIN_BASIC_AUTH_USER=admin
+ADMIN_BASIC_AUTH_PASS=xxxxxxxx
 ```
 
 ## Production deployment
@@ -178,9 +195,43 @@ under `/fr` (e.g. `/fr/contact`, `/fr/news/[slug]`, `/fr/rss.xml`).
 | `/contact`                | `src/pages/contact.astro`           | POSTs to `/api/contact`     |
 | `/api/contact`            | `src/pages/api/contact.ts`          | Persists to Postgres        |
 | `/api/health`             | `src/pages/api/health.ts`           | Liveness + DB ping          |
+| `/admin/drafts`           | `src/pages/admin/drafts/index.astro` | Review queue (Basic Auth)  |
+| `/admin/drafts/[id]`      | `src/pages/admin/drafts/[id].astro` | Edit + approve/reject       |
+| `/api/cron/fetch-drafts`  | `src/pages/api/cron/fetch-drafts.ts` | IMAP poll (CRON_SECRET)    |
 | `/sitemap-index.xml`      | `@astrojs/sitemap` integration      | Emits `hreflang` alternates |
 | `/rss.xml`                | `src/pages/rss.xml.ts`              | News RSS feed (`/fr/rss.xml` for FR) |
 | `/robots.txt`             | `src/pages/robots.txt.ts`           |                             |
+
+## Insights drafts pipeline
+
+Copywriters submit new posts by email; the app polls the inbox, parses the
+attachment, and queues a draft for one-click review.
+
+1. **Copywriter** fills in `docs/content/insights-copywriter-template.md`
+   (a self-contained brief) and emails the filled `.md` to
+   `drafts@executivefounders.com` with an optional hero image attached.
+2. **Cron container** runs `deploy/cron/poll-drafts.sh` every 5 minutes,
+   which hits `GET /api/cron/fetch-drafts?secret=…` on the app container.
+3. **App** connects to `imap.gmail.com:993` with `IMAP_USER` /
+   `IMAP_APP_PASSWORD`, fetches `UNSEEN` mail from senders on
+   `ALLOWLIST_SENDERS`, parses the `.md` attachment + image, and inserts
+   a row into the `post_drafts` table (idempotent on `Message-Id`).
+4. **Reviewer** visits `https://executivefounders.com/admin/drafts`
+   (gated by nginx HTTP Basic Auth using `ADMIN_BASIC_AUTH_USER` /
+   `_PASS`), edits any field, then clicks **Approve**.
+5. **Approve** writes the rendered MDX (and hero image, if attached) into
+   the Docker volume `executivefounders_drafts_export` at
+   `/data/drafts-export/<locale>/<slug>.mdx`.
+6. **Editor** runs `./deploy/scripts/pull-drafts.sh` locally to copy the
+   approved drafts from the server volume into `src/content/posts/<locale>/`,
+   reviews the MDX, commits, and re-deploys.
+
+Prereqs on the Workspace side:
+
+- Enable IMAP on the underlying mailbox in Gmail settings.
+- Create the alias `drafts@executivefounders.com` if it does not exist
+  (Admin Console → Users → Aliases) and create an **app password** for
+  the underlying account (Account → Security → App passwords).
 
 ## SEO
 
@@ -204,8 +255,8 @@ cost is effectively that of a static site.
 
 ## TODO (intentionally deferred)
 
-- Admin UI at `/admin` for editing content (CRUD on posts /
-  case-studies / videos backed by Postgres).
+- Full admin UI for editing already-published posts (the drafts pipeline
+  covers ingest only — see "Insights drafts pipeline" above).
 - Nodemailer wiring on `/api/contact` (currently the submission is
   persisted and logged; SMTP delivery is a no-op until credentials are
   supplied).

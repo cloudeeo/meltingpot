@@ -15,7 +15,6 @@ export const SOFT_LAUNCH = true;
  * there because the Astro config is a .mjs file that can't import .ts).
  */
 export const HIDDEN_ROUTES: readonly string[] = [
-  '/services',
   '/portfolio',
   '/digital-media',
   '/about',

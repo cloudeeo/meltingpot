@@ -1,0 +1,63 @@
+---
+import { render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import Base from '~/layouts/Base.astro';
+import LogoMark from '~/components/LogoMark.astro';
+import { buildSeo } from '~/lib/seo';
+import { getDictionary, localizePath, type Locale } from '~/i18n';
+
+interface Props {
+  doc: CollectionEntry<'services'>;
+  locale: Locale;
+  /** Locale-agnostic path of this page, e.g. `/services/strategic-advisory`. */
+  path: string;
+}
+
+const { doc, locale, path } = Astro.props;
+const t = getDictionary(locale);
+const { Content } = await render(doc);
+
+const seo = buildSeo({
+  path: localizePath(path, locale),
+  locale,
+  title: doc.data.title,
+  description: doc.data.lede,
+});
+
+const contactHref = localizePath('/contact', locale);
+const servicesHref = localizePath('/services', locale);
+---
+<Base seo={seo}>
+  <section class="page-hero">
+    <div class="container">
+      <p class="eyebrow">
+        <a href={servicesHref}>{t.services.eyebrow}</a>
+      </p>
+      <h1>{doc.data.title}</h1>
+      <p class="page-lede">{doc.data.lede}</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container service-detail-grid">
+      <figure class="service-placeholder-art" aria-hidden="true">
+        <LogoMark size={120} />
+      </figure>
+
+      <article class="prose service-prose">
+        <Content />
+        <aside class="service-placeholder-note" role="note">
+          {t.services.placeholderNote}
+        </aside>
+      </article>
+    </div>
+  </section>
+
+  <section class="section section-dark">
+    <div class="container closing">
+      <h2>{t.services.closingTitle}</h2>
+      <p>{t.services.closingBody}</p>
+      <a class="btn btn-light" href={contactHref}>{t.services.closingButton}</a>
+    </div>
+  </section>
+</Base>
