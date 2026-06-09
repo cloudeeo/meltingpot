@@ -30,6 +30,7 @@ const fr: Dictionary = {
       { key: 'portfolio', label: 'Réalisations', path: '/portfolio' },
       { key: 'digital-media', label: 'Médias', path: '/digital-media' },
       { key: 'news', label: 'Analyses', path: '/news' },
+      { key: 'academy', label: 'Academy', path: 'https://platform.executivefounders.com', external: true },
       { key: 'about', label: 'À propos', path: '/about' },
       { key: 'contact', label: 'Contact', path: '/contact' },
     ],
@@ -143,6 +144,7 @@ const fr: Dictionary = {
     ],
     aiCallout:
       "Nous pensons que le véritable défi n'est pas la manière dont les organisations utilisent l'IA. Le véritable défi est la manière dont les organisations mettent en œuvre, encadrent et déploient l'IA de façon responsable et durable.",
+    aiPlatformLabel: 'Former vos équipes sur la plateforme',
 
     experienceTitle: 'Une expérience dans des environnements de croissance et de transformation',
     sectors: [
@@ -364,6 +366,14 @@ const fr: Dictionary = {
     termsSeoTitle: "Conditions d'utilisation",
     termsSeoDescription:
       "Conditions régissant l'utilisation d'executivefounders.com — propriété intellectuelle, avertissements et droit suisse applicable.",
+  },
+
+  platform: {
+    eyebrow: 'Academy',
+    title: 'Développer les compétences internes — à votre rythme',
+    body:
+      "Des cours structurés et concrets pour dirigeants et opérationnels sur la gouvernance, la transformation et l'adoption de l'IA. À utiliser de façon autonome ou en complément d'une mission de conseil.",
+    button: 'Découvrir l\'academy',
   },
 
   cookieBanner: {

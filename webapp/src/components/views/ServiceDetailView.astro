@@ -1,10 +1,19 @@
 ---
 import { render } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
+import { Image } from 'astro:assets';
 import Base from '~/layouts/Base.astro';
 import LogoMark from '~/components/LogoMark.astro';
+import PlatformCta from '~/components/PlatformCta.astro';
 import { buildSeo } from '~/lib/seo';
+import { contentSlug } from '~/lib/content';
 import { getDictionary, localizePath, type Locale } from '~/i18n';
+
+import strategicAdvisory from '~/assets/images/services/strategic-advisory.webp';
+import governanceOperational from '~/assets/images/services/governance-operational-leadership.webp';
+import pmo from '~/assets/images/services/pmo-programme-governance.webp';
+import organisationalScaling from '~/assets/images/services/organisational-scaling.webp';
+import corporateCompliance from '~/assets/images/services/corporate-compliance-ai-frameworks.webp';
 
 interface Props {
   doc: CollectionEntry<'services'>;
@@ -26,10 +35,37 @@ const seo = buildSeo({
 
 const contactHref = localizePath('/contact', locale);
 const servicesHref = localizePath('/services', locale);
+
+/**
+ * Per-service hero background. Each entry pairs the WebP asset (rendered
+ * via Astro's <Image>) with the dominant background colour sampled from
+ * the source PNG; we fall back to that solid colour on viewports too
+ * wide for the image to cover.
+ */
+const HERO_BG: Record<string, { image: ImageMetadata; color: string }> = {
+  'strategic-advisory': { image: strategicAdvisory, color: '#f7f2eb' },
+  'governance-operational-leadership': { image: governanceOperational, color: '#f8f0ea' },
+  'pmo-programme-governance': { image: pmo, color: '#f6eee8' },
+  'organisational-scaling': { image: organisationalScaling, color: '#f9eee5' },
+  'corporate-compliance-ai-frameworks': { image: corporateCompliance, color: '#f6ede6' },
+};
+const hero = HERO_BG[contentSlug(doc.id)];
 ---
 <Base seo={seo}>
-  <section class="page-hero">
-    <div class="container">
+  <section class={hero ? 'page-hero page-hero-image' : 'page-hero'} style={hero ? `--hero-bg: ${hero.color};` : undefined}>
+    {hero && (
+      <Image
+        src={hero.image}
+        alt=""
+        widths={[800, 1200, 1600, 2000]}
+        sizes="100vw"
+        class="page-hero-bg"
+        loading="eager"
+        fetchpriority="high"
+      />
+    )}
+    {hero && <div class="page-hero-scrim" aria-hidden="true"></div>}
+    <div class="container page-hero-content">
       <p class="eyebrow">
         <a href={servicesHref}>{t.services.eyebrow}</a>
       </p>
@@ -52,6 +88,8 @@ const servicesHref = localizePath('/services', locale);
       </article>
     </div>
   </section>
+
+  <PlatformCta locale={locale} variant="soft" />
 
   <section class="section section-dark">
     <div class="container closing">

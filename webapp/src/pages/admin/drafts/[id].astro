@@ -27,13 +27,15 @@ const publishedAtStr =
 
 const flashOk = Astro.url.searchParams.get('ok');
 const flashErr = Astro.url.searchParams.get('err');
+
+const SLUG_PLACEHOLDER = '{slug}';
 ---
 <AdminLayout title={`Draft: ${draft.title}`}>
   <p><a class="admin-back" href="/admin/drafts">← back to drafts</a></p>
   <h1>{draft.title}</h1>
   <p class="admin-card-meta" style="margin-bottom: 18px;">
     <span>{fmtDate(draft.receivedAt)}</span>
-    <span>{draft.senderName ? `${draft.senderName} <${draft.senderEmail}>` : draft.senderEmail}</span>
+    <span>{draft.senderName ? draft.senderName + ' <' + draft.senderEmail + '>' : draft.senderEmail}</span>
     <span>
       <span class={`admin-pill admin-pill-${draft.status}`}>{draft.status}</span>
     </span>
@@ -44,7 +46,8 @@ const flashErr = Astro.url.searchParams.get('err');
 
   {draft.parseNotes && (
     <div class="admin-notes">
-      <strong>Parser notes:</strong>{'\n'}{draft.parseNotes}
+      <strong>Parser notes:</strong>
+      <pre class="admin-notes-body">{draft.parseNotes}</pre>
     </div>
   )}
 
@@ -70,7 +73,7 @@ const flashErr = Astro.url.searchParams.get('err');
     <div class="admin-form-row">
       <label for="slug">Slug (auto from title — edit to override)</label>
       <input id="slug" name="slug" value={draft.slug} maxlength={160} />
-      <span class="help">Final URL will be /news/{`{slug}`} for EN, /fr/news/{`{slug}`} for FR.</span>
+      <span class="help">Final URL will be /news/{SLUG_PLACEHOLDER} for EN, /fr/news/{SLUG_PLACEHOLDER} for FR.</span>
     </div>
 
     <div class="admin-form-row">

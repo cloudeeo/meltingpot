@@ -2,6 +2,7 @@
 import Base from '~/layouts/Base.astro';
 import Icon from '~/components/Icon.astro';
 import CardPost from '~/components/CardPost.astro';
+import PlatformCta from '~/components/PlatformCta.astro';
 import { Image } from 'astro:assets';
 import hero01 from '~/assets/images/hero01.webp';
 import hero02 from '~/assets/images/hero02.webp';
@@ -191,13 +192,18 @@ const secondaryCtaLabel = h.heroSecondary;
 
       <p class="callout callout-strong">{h.aiCallout}</p>
 
-      <p style="margin-top: 28px; text-align: center;">
+      <p class="hero-cta" style="margin-top: 28px; justify-content: center;">
         <a class="btn btn-primary" href={localizePath(t.aiGovernance.path, locale)}>
           {t.aiGovernance.homeCtaLabel}
+        </a>
+        <a class="btn btn-ghost" href={SITE.platformUrl} target="_blank" rel="noopener">
+          {h.aiPlatformLabel}
         </a>
       </p>
     </div>
   </section>
+
+  <PlatformCta locale={locale} variant="soft" />
 
   <section class="section" aria-labelledby="experience-title">
     <div class="container">

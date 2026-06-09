@@ -31,6 +31,7 @@ const en = {
       { key: 'portfolio', label: 'Portfolio', path: '/portfolio' },
       { key: 'digital-media', label: 'Digital Media', path: '/digital-media' },
       { key: 'news', label: 'Insights', path: '/news' },
+      { key: 'academy', label: 'Academy', path: 'https://platform.executivefounders.com', external: true },
       { key: 'about', label: 'About', path: '/about' },
       { key: 'contact', label: 'Contact', path: '/contact' },
     ],
@@ -144,6 +145,7 @@ const en = {
     ],
     aiCallout:
       'We believe the real challenge is not how organisations use AI. The real challenge is how organisations implement, govern and scale AI responsibly and sustainably.',
+    aiPlatformLabel: 'Train your teams on the platform',
 
     experienceTitle: 'Experience across growth and transformation environments',
     sectors: [
@@ -365,6 +367,14 @@ const en = {
     termsSeoTitle: 'Terms of use',
     termsSeoDescription:
       'Terms governing the use of executivefounders.com — intellectual property, disclaimers, and Swiss governing law.',
+  },
+
+  platform: {
+    eyebrow: 'Academy',
+    title: 'Build internal capability — on your own time',
+    body:
+      'Practical, structured courses for executives and operators on governance, transformation and AI adoption. Use them as a standalone resource or alongside an advisory engagement.',
+    button: 'Visit the academy',
   },
 
   cookieBanner: {

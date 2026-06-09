@@ -33,7 +33,13 @@ const termsHref = localizePath(t.legal.termsPath, locale);
       <h2 class="footer-heading">{t.footer.explore}</h2>
       <ul class="footer-menu">
         {nav.map((item) => (
-          <li><a href={item.href}>{item.label}</a></li>
+          <li>
+            <a
+              href={item.href}
+              target={item.external ? '_blank' : undefined}
+              rel={item.external ? 'noopener' : undefined}
+            >{item.label}</a>
+          </li>
         ))}
       </ul>
     </div>

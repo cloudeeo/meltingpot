@@ -522,6 +522,33 @@ ul, ol { color: var(--color-muted); }
 .callout-strong p { color: #fff; }
 
 /* ==========================================================================
+   Platform CTA — band linking to platform.executivefounders.com.
+   Used on the home, services and AI Governance pages.
+   ========================================================================== */
+.platform-band-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: clamp(20px, 4vw, 40px);
+  justify-content: space-between;
+}
+.platform-band-text {
+  flex: 1 1 360px;
+  max-width: 720px;
+}
+.platform-band-text h2 {
+  margin: 8px 0 12px;
+  font-size: clamp(1.4rem, 2vw + 0.6rem, 1.8rem);
+}
+.platform-band-text p {
+  color: var(--color-muted);
+  margin: 0;
+}
+.platform-band .btn {
+  flex: 0 0 auto;
+}
+
+/* ==========================================================================
    News post CTA — auto-rendered at the bottom of every news post.
    Lives below the prose, full-width inside the page container.
    ========================================================================== */
@@ -602,6 +629,92 @@ ul, ol { color: var(--color-muted); }
 }
 .page-hero h1 { margin-bottom: 16px; }
 .page-lede { font-size: 1.1rem; color: var(--color-muted); max-width: 760px; }
+
+/* Image-backed hero (used on service detail pages). The image occupies
+   the rightmost two-thirds of the hero with `object-fit: cover`, so the
+   width is always exactly 2/3 and the only crop is ~10 % off the top
+   and bottom (sized via min-height). A blur scrim covers the leftmost
+   half of the hero — the text column plus the leftmost ~20 % of the
+   image — so the seam between hero background and image is softened
+   and the title remains legible. The hero's background colour (--hero-bg)
+   is sampled from the source asset for a near-invisible match. */
+.page-hero-image {
+  position: relative;
+  overflow: hidden;
+  background: var(--hero-bg, var(--color-bg-soft));
+  isolation: isolate;
+  /* Hero height tracks the image width (~53 % of the viewport) so the
+     vertical crop stays close to 10 % top / 10 % bottom. Clamped so the
+     hero remains usable on small viewports and not oversized on 4K. */
+  min-height: clamp(220px, 24vw, 460px);
+  display: flex;
+  align-items: center;
+}
+.page-hero-image > .page-hero-bg {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  /* 20 % smaller than the previous 66.67 % — pushes the image to the
+     right and gives the title column more breathing room. */
+  width: 53.3333%;
+  height: 100%;
+  object-fit: cover;
+  object-position: right center;
+  z-index: 0;
+  pointer-events: none;
+}
+.page-hero-image > .page-hero-scrim {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 65%;
+  z-index: 1;
+  pointer-events: none;
+  /* Backdrop blur covers the text column AND the leftmost ~20 % of the
+     image (image now starts at 46.67 %; scrim full-strength to ~57 %
+     then feathers to nothing by 65 %). The fade hides any seam between
+     the hero background colour and the image's edge. */
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  -webkit-mask-image: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 1) 87%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 1) 87%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+.page-hero-image > .page-hero-content {
+  position: relative;
+  z-index: 2;
+}
+.page-hero-image .page-lede { color: var(--color-ink-2); }
+@media (max-width: 720px) {
+  /* On narrow viewports the image stacks below the text instead of
+     sitting beside it — keeping it fully visible at a usable size. */
+  .page-hero-image {
+    display: block;
+    min-height: 0;
+    padding-bottom: 0;
+  }
+  .page-hero-image > .page-hero-bg {
+    position: static;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    margin-top: clamp(24px, 4vw, 40px);
+  }
+  .page-hero-image > .page-hero-scrim {
+    display: none;
+  }
+}
 
 /* ==========================================================================
    Forms

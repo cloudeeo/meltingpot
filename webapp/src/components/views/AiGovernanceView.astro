@@ -1,5 +1,8 @@
 ---
+import { Image } from 'astro:assets';
 import Base from '~/layouts/Base.astro';
+import PlatformCta from '~/components/PlatformCta.astro';
+import aiGovernanceImage from '~/assets/images/services/ai-governance.webp';
 import { buildSeo } from '~/lib/seo';
 import { getDictionary, localizePath, type Locale } from '~/i18n';
 
@@ -21,8 +24,18 @@ const contactHref = localizePath('/contact', locale);
 ---
 <Base seo={seo}>
 
-  <section class="page-hero">
-    <div class="container">
+  <section class="page-hero page-hero-image" style="--hero-bg: #f4e9e2;">
+    <Image
+      src={aiGovernanceImage}
+      alt=""
+      widths={[800, 1200, 1600, 2000]}
+      sizes="100vw"
+      class="page-hero-bg"
+      loading="eager"
+      fetchpriority="high"
+    />
+    <div class="page-hero-scrim" aria-hidden="true"></div>
+    <div class="container page-hero-content">
       <p class="eyebrow">{a.hero.eyebrow}</p>
       <h1>{a.hero.title}</h1>
       <p class="page-lede">{a.hero.lede}</p>
@@ -195,6 +208,8 @@ const contactHref = localizePath('/contact', locale);
       </blockquote>
     </div>
   </section>
+
+  <PlatformCta locale={locale} variant="soft" />
 
   <section class="section section-dark" aria-labelledby="closing-title">
     <div class="container closing">

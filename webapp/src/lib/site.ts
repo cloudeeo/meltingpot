@@ -6,6 +6,7 @@
 export const SITE = {
   name: 'Executive Founders',
   url: (import.meta.env.PUBLIC_SITE_URL ?? 'https://executivefounders.com').replace(/\/$/, ''),
+  platformUrl: 'https://platform.executivefounders.com',
   social: {
     linkedin: 'https://www.linkedin.com/company/executive-founders',
     youtube: '',

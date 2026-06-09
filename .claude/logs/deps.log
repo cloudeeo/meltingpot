@@ -5,3 +5,4 @@
 2026-04-22T13:25:47Z cd /home/claudio/dev/confinis/medridian/backend && npm install --save jszip 2>&1 | tail -5
 2026-04-23T18:45:03Z cd /home/claudio/dev/confinis/medridian/backend && npm install --save docx 2>&1 | tail -5 && grep '"docx"' package.json
 2026-04-24T08:09:28Z cd /home/claudio/dev/confinis/medridian/backend && npm install --save @fastify/multipart pdf-parse 2>&1 | tail -3 && npm install --save-dev @types/pdf-parse 2>&1 | tail -3 && grep -E '"@fastify/multipart"|"pdf-parse"' package.json
+2026-06-09T07:26:17Z cd /home/claudio/dev/ef/website/wordpress/webapp && pnpm install 2>&1 | tail -25

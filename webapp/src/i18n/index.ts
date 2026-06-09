@@ -45,6 +45,8 @@ export interface LocalizedNavItem {
   key: string;
   label: string;
   href: string;
+  /** True when the entry points to an off-site URL (renders target=_blank). */
+  external?: boolean;
   children?: LocalizedNavItem[];
 }
 
@@ -52,6 +54,8 @@ interface RawNavChild {
   key: string;
   label: string;
   path: string;
+  /** Mark as external to skip locale-prefixing and pass the URL through verbatim. */
+  external?: boolean;
 }
 
 interface RawNavItem extends RawNavChild {
@@ -62,25 +66,28 @@ interface RawNavItem extends RawNavChild {
  * Primary navigation for a locale, with hrefs already localized and the
  * soft-launch hidden routes filtered out. Items may carry a `children`
  * array (for dropdown / submenu support); hidden children are filtered
- * out the same way as top-level items.
+ * out the same way as top-level items. Items with `external: true` keep
+ * their absolute URL intact and are excluded from the hidden-routes check.
  */
 export function getNav(locale: Locale): LocalizedNavItem[] {
   const t = getDictionary(locale);
   const items = t.nav.items as readonly RawNavItem[];
   return items
-    .filter((item) => !isHidden(item.path))
+    .filter((item) => item.external || !isHidden(item.path))
     .map((item) => {
       const children = item.children
-        ?.filter((c) => !isHidden(c.path))
+        ?.filter((c) => c.external || !isHidden(c.path))
         .map((c) => ({
           key: c.key,
           label: c.label,
-          href: localizePath(c.path, locale),
+          href: c.external ? c.path : localizePath(c.path, locale),
+          ...(c.external ? { external: true } : {}),
         }));
       return {
         key: item.key,
         label: item.label,
-        href: localizePath(item.path, locale),
+        href: item.external ? item.path : localizePath(item.path, locale),
+        ...(item.external ? { external: true } : {}),
         ...(children && children.length ? { children } : {}),
       };
     });
