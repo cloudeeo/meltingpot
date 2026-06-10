@@ -75,6 +75,9 @@ const services = defineCollection({
     order: z.number().default(0),
     /** Hide from build without deleting the file. */
     draft: z.boolean().default(false),
+    /** Render the "coming soon" placeholder note. Default true; set
+     *  false on services with full editorial body content. */
+    placeholder: z.boolean().default(true),
   }),
 });
 

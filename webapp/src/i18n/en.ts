@@ -21,6 +21,7 @@ const en = {
         path: '/services',
         children: [
           { key: 'strategic-advisory', label: 'Strategic Advisory', path: '/services/strategic-advisory' },
+          { key: 'strategic-brand-positioning', label: 'Strategic Brand Positioning', path: '/services/strategic-brand-positioning' },
           { key: 'governance-operational-leadership', label: 'Governance & Operational Leadership', path: '/services/governance-operational-leadership' },
           { key: 'pmo-programme-governance', label: 'PMO & Programme Governance', path: '/services/pmo-programme-governance' },
           { key: 'organisational-scaling', label: 'Organisational Scaling', path: '/services/organisational-scaling' },
@@ -87,9 +88,10 @@ const en = {
       'Our role is to bridge strategy, governance and execution — operating at leadership level, helping organisations structure and guide transformation sustainably over time.',
 
     servicesTitle: 'Transforming complexity into structured execution',
-    servicesLede: 'Five areas where we create lasting organisational impact.',
+    servicesLede: 'Seven areas where we create lasting organisational impact.',
     services: [
       { title: 'Strategic Advisory', body: 'Guiding leadership through complexity and change.' },
+      { title: 'Strategic Brand Positioning', body: 'Turning organisational identity into strategic advantage.' },
       { title: 'Governance & Operational Leadership', body: 'Structuring accountability and decision-making.' },
       { title: 'PMO & Programme Governance', body: 'Coordinating execution across initiatives.' },
       { title: 'Organisational Scaling', body: 'Building structures that grow with the business.' },
@@ -171,7 +173,7 @@ const en = {
   services: {
     seoTitle: 'Services',
     seoDescription:
-      'Strategic advisory, governance, PMO, organisational scaling, AI governance and corporate compliance with AI frameworks — six areas where Executive Founders creates lasting organisational impact.',
+      'Strategic advisory, brand positioning, governance, PMO, organisational scaling, AI governance and corporate compliance with AI frameworks — seven areas where Executive Founders creates lasting organisational impact.',
     eyebrow: 'What we do',
     title: 'Strategic advisory, governance and operational leadership',
     lede: 'We design and steer the structures that turn strategy into execution — from governance and PMO orchestration to AI adoption, organisational scaling and compliance with the emerging AI frameworks.',
@@ -185,6 +187,15 @@ const en = {
           'Leadership team coaching and decision support',
           'Strategic prioritisation and roadmap design',
           'Board and investor preparation',
+        ],
+      },
+      {
+        title: 'Strategic Brand Positioning',
+        body: 'We help organisations define and communicate a distinctive market position — aligning strategy, identity and perception so the market understands not only what they do, but why they matter.',
+        bullets: [
+          'Market positioning and brand narrative',
+          'Thought leadership and executive visibility',
+          'Strategic communication campaigns',
         ],
       },
       {
@@ -378,12 +389,13 @@ const en = {
   },
 
   cookieBanner: {
-    title: 'A short note about this website',
+    title: 'Help us improve this website',
     body:
-      'We do not use cookies for analytics, advertising or tracking. Your browser only stores a small record once you acknowledge this notice, so we do not show it on every visit.',
+      'We would like to set Google Analytics cookies to measure how visitors use the site, so we can make it more useful. They are only set if you accept; declining leaves the site fully functional with no tracking.',
     moreInfo: 'Read our privacy notice',
-    acknowledge: 'Got it',
-    closeAria: 'Dismiss notice',
+    accept: 'Accept analytics',
+    reject: 'Reject',
+    closeAria: 'Dismiss notice (declines analytics)',
   },
 
   aiGovernance: {

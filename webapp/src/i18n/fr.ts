@@ -20,6 +20,7 @@ const fr: Dictionary = {
         path: '/services',
         children: [
           { key: 'strategic-advisory', label: 'Conseil stratégique', path: '/services/strategic-advisory' },
+          { key: 'strategic-brand-positioning', label: 'Positionnement stratégique de marque', path: '/services/strategic-brand-positioning' },
           { key: 'governance-operational-leadership', label: 'Gouvernance et leadership opérationnel', path: '/services/governance-operational-leadership' },
           { key: 'pmo-programme-governance', label: 'PMO et gouvernance de programme', path: '/services/pmo-programme-governance' },
           { key: 'organisational-scaling', label: "Mise à l'échelle organisationnelle", path: '/services/organisational-scaling' },
@@ -86,9 +87,10 @@ const fr: Dictionary = {
       "Notre rôle est de relier stratégie, gouvernance et exécution — en intervenant au niveau de la direction, pour aider les organisations à structurer et guider leur transformation de manière durable dans le temps.",
 
     servicesTitle: 'Transformer la complexité en exécution structurée',
-    servicesLede: 'Cinq domaines dans lesquels nous créons un impact organisationnel durable.',
+    servicesLede: 'Sept domaines dans lesquels nous créons un impact organisationnel durable.',
     services: [
       { title: 'Conseil stratégique', body: "Accompagner la direction à travers la complexité et le changement." },
+      { title: 'Positionnement stratégique de marque', body: "Transformer l'identité organisationnelle en avantage stratégique." },
       { title: 'Gouvernance et leadership opérationnel', body: 'Structurer les responsabilités et la prise de décision.' },
       { title: 'PMO et gouvernance de programme', body: "Coordonner l'exécution entre les initiatives." },
       { title: "Mise à l'échelle organisationnelle", body: "Construire des structures qui évoluent avec l'entreprise." },
@@ -170,7 +172,7 @@ const fr: Dictionary = {
   services: {
     seoTitle: 'Services',
     seoDescription:
-      "Conseil stratégique, gouvernance, PMO, mise à l'échelle organisationnelle, gouvernance de l'IA et conformité aux cadres d'IA — six domaines dans lesquels Executive Founders crée un impact organisationnel durable.",
+      "Conseil stratégique, positionnement de marque, gouvernance, PMO, mise à l'échelle organisationnelle, gouvernance de l'IA et conformité aux cadres d'IA — sept domaines dans lesquels Executive Founders crée un impact organisationnel durable.",
     eyebrow: 'Ce que nous faisons',
     title: 'Conseil stratégique, gouvernance et leadership opérationnel',
     lede: "Nous concevons et pilotons les structures qui transforment la stratégie en exécution — de la gouvernance et l'orchestration du PMO à l'adoption de l'IA, la mise à l'échelle organisationnelle et la conformité aux cadres d'IA émergents.",
@@ -184,6 +186,15 @@ const fr: Dictionary = {
           "Accompagnement de l'équipe de direction et aide à la décision",
           'Priorisation stratégique et conception de la feuille de route',
           "Préparation du conseil d'administration et des investisseurs",
+        ],
+      },
+      {
+        title: 'Positionnement stratégique de marque',
+        body: "Nous aidons les organisations à définir et à communiquer un positionnement de marché distinctif — en alignant stratégie, identité et perception, afin que le marché comprenne non seulement ce qu'elles font, mais pourquoi elles comptent.",
+        bullets: [
+          'Positionnement de marché et récit de marque',
+          'Thought leadership et visibilité des dirigeants',
+          'Campagnes de communication stratégique',
         ],
       },
       {
@@ -377,12 +388,13 @@ const fr: Dictionary = {
   },
 
   cookieBanner: {
-    title: 'Une note rapide sur ce site',
+    title: 'Aidez-nous à améliorer ce site',
     body:
-      "Nous n'utilisons aucun cookie d'analyse, de publicité ou de suivi. Votre navigateur enregistre uniquement une petite trace une fois la notice acceptée, afin que nous ne la réaffichions pas à chaque visite.",
+      "Nous aimerions déposer des cookies Google Analytics pour mesurer l'utilisation du site et l'améliorer. Ils ne sont déposés que si vous acceptez ; refuser laisse le site pleinement fonctionnel, sans aucun suivi.",
     moreInfo: 'Lire notre politique de confidentialité',
-    acknowledge: "J'ai compris",
-    closeAria: 'Fermer la notice',
+    accept: 'Accepter',
+    reject: 'Refuser',
+    closeAria: 'Fermer la notice (équivaut à refuser)',
   },
 
   aiGovernance: {

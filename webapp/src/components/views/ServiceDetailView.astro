@@ -10,6 +10,7 @@ import { contentSlug } from '~/lib/content';
 import { getDictionary, localizePath, type Locale } from '~/i18n';
 
 import strategicAdvisory from '~/assets/images/services/strategic-advisory.webp';
+import strategicBrandPositioning from '~/assets/images/services/strategic-brand-positioning.webp';
 import governanceOperational from '~/assets/images/services/governance-operational-leadership.webp';
 import pmo from '~/assets/images/services/pmo-programme-governance.webp';
 import organisationalScaling from '~/assets/images/services/organisational-scaling.webp';
@@ -44,6 +45,7 @@ const servicesHref = localizePath('/services', locale);
  */
 const HERO_BG: Record<string, { image: ImageMetadata; color: string }> = {
   'strategic-advisory': { image: strategicAdvisory, color: '#f7f2eb' },
+  'strategic-brand-positioning': { image: strategicBrandPositioning, color: '#f5eee6' },
   'governance-operational-leadership': { image: governanceOperational, color: '#f8f0ea' },
   'pmo-programme-governance': { image: pmo, color: '#f6eee8' },
   'organisational-scaling': { image: organisationalScaling, color: '#f9eee5' },
@@ -82,9 +84,11 @@ const hero = HERO_BG[contentSlug(doc.id)];
 
       <article class="prose service-prose">
         <Content />
-        <aside class="service-placeholder-note" role="note">
-          {t.services.placeholderNote}
-        </aside>
+        {doc.data.placeholder && (
+          <aside class="service-placeholder-note" role="note">
+            {t.services.placeholderNote}
+          </aside>
+        )}
       </article>
     </div>
   </section>

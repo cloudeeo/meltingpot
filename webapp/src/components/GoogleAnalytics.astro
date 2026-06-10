@@ -1,0 +1,62 @@
+---
+import { SITE } from '~/lib/site';
+
+const id = SITE.gaMeasurementId;
+---
+{id && (
+  <script is:inline define:vars={{ id }}>
+    /* Consent-gated Google Analytics 4 loader.
+     *
+     * We deliberately set the default consent state to `denied` *before*
+     * loading gtag.js (Google Consent Mode v2). The cookie banner sets
+     * `ef-consent-v2` in localStorage and dispatches `cookie:consent`
+     * with `{ analytics: true|false }`; we mirror that into a gtag
+     * `consent('update', ...)` call. Until the user accepts, gtag fires
+     * cookieless pings only (no `_ga*` cookies, no client ID stored). */
+    (function () {
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { window.dataLayer.push(arguments); }
+      window.gtag = gtag;
+
+      // Default everything to denied; respect any prior choice.
+      var storedAnalytics = false;
+      try {
+        var raw = window.localStorage.getItem('ef-consent-v2');
+        if (raw) {
+          var parsed = JSON.parse(raw);
+          storedAnalytics = parsed && parsed.analytics === true;
+        }
+      } catch (_) { /* localStorage may be unavailable */ }
+
+      gtag('consent', 'default', {
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        analytics_storage: storedAnalytics ? 'granted' : 'denied',
+        wait_for_update: 500,
+      });
+
+      gtag('js', new Date());
+      gtag('config', id, {
+        anonymize_ip: true,
+        allow_ad_personalization_signals: false,
+        allow_google_signals: false,
+      });
+
+      // Load gtag.js asynchronously. The library respects the consent
+      // state we set above — no cookies until analytics_storage=granted.
+      var s = document.createElement('script');
+      s.async = true;
+      s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(id);
+      document.head.appendChild(s);
+
+      // React to consent changes from the cookie banner.
+      document.addEventListener('cookie:consent', function (e) {
+        var detail = (e && e.detail) || {};
+        gtag('consent', 'update', {
+          analytics_storage: detail.analytics ? 'granted' : 'denied',
+        });
+      });
+    })();
+  </script>
+)}

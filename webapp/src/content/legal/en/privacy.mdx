@@ -1,7 +1,7 @@
 ---
 title: "Privacy notice"
 lede: "How we handle personal data when you visit executivefounders.com or get in touch with us through the website."
-effectiveDate: 2026-06-01
+effectiveDate: 2026-06-10
 ---
 
 ## 1. Who we are
@@ -19,7 +19,7 @@ For any question about how we handle your data, write to **privacy@executivefoun
 
 ## 2. What we collect, and why
 
-We collect very little. There is no advertising, no behavioural tracking and no third-party analytics on this website.
+We collect very little. There is no advertising and no behavioural tracking on this website. Aggregate usage statistics are only collected through Google Analytics 4 **after you actively accept** the cookie banner — see section 7 for the detail.
 
 **When you submit the contact form** we receive:
 
@@ -35,6 +35,8 @@ The legal basis for this processing is your consent (Art. 6(1)(a) GDPR; Art. 6(6
 
 **When you visit the website** the server logs ordinary HTTP request information (timestamp, requested URL, response code) for a short period for security and stability purposes. We do not associate these logs with form submissions or with any tracking identifier.
 
+**If you accept analytics**, Google Analytics 4 receives, on each page view, your IP address (truncated by Google before storage), the page URL and referrer, the device and browser metadata reported by the browser, and a pseudonymous client identifier stored in the `_ga*` cookies described in section 7.
+
 ## 3. Who we share it with
 
 We do not sell or rent your personal data and we do not use it for marketing.
@@ -43,17 +45,20 @@ Limited recipients:
 
 - **Google Workspace** processes contact-form notifications and any subsequent email correspondence as our processor, under standard contractual terms.
 - **Amazon Web Services (Lightsail)** hosts the application and database as our processor.
+- **Google LLC / Google Ireland Limited** processes pseudonymous Google Analytics 4 measurement data on our behalf, but **only after you accept** the cookie banner.
 
 We do not transfer your data to any other recipient unless required by law.
 
 ## 4. International transfers
 
-Our hosting region is the European Union. Google Workspace may process email content outside the EEA; Google maintains standard contractual clauses and certifications for these transfers.
+Our hosting region is the European Union. Google Workspace may process email content outside the EEA. Google Analytics 4 measurement data is processed by Google LLC in the United States. For each of these transfers Google relies on the European Commission's standard contractual clauses and is certified under the EU–U.S. Data Privacy Framework.
 
 ## 5. How long we keep it
 
 - Contact-form submissions: **24 months** from the date submitted, unless we are in active correspondence with you about a current or prospective engagement.
 - Server access logs: **30 days**.
+- Google Analytics 4 event data (if you accept): **14 months** at Google, after which it is automatically deleted.
+- Your cookie-banner choice: stored in your browser's local storage for **12 months** under the key `ef-consent-v2`; clear it from your browser settings or via **Cookie preferences** in the footer to be re-prompted.
 
 ## 6. Your rights
 
@@ -76,14 +81,28 @@ You may also lodge a complaint with a supervisory authority:
 
 ## 7. Cookies and similar technologies
 
-This website uses **only essential resources** to function. We do not set cookies for analytics, advertising or behavioural tracking.
+This website does not use any cookie for advertising or behavioural tracking. We use cookies in two situations only:
 
-Two technical details worth noting:
+**Always on — essential**
 
-- **Local storage.** Your browser stores a small "consent acknowledged" record once you interact with the cookie notice, so we do not show the notice on every visit. You can clear it from your browser settings, or via **Cookie preferences** in the footer.
-- **Google Fonts.** We load the Inter typeface from `fonts.googleapis.com`. This causes your browser to make a request to Google, which receives your IP address as part of the normal request. No cookies are set on our domain.
+- **Local storage.** Your browser stores your cookie-banner choice under the key `ef-consent-v2` (a JSON record with your decision and a timestamp). This is what allows us not to show the banner on every visit.
 
-If we add any cookies in the future, this notice will be updated and we will request your consent before non-essential cookies are placed on your device.
+**Only after you accept — analytics**
+
+The cookie banner offers an explicit **Accept analytics** / **Reject** choice. Until you accept, Google Analytics fires cookieless pings only and no `_ga*` cookies are placed. If you accept, the following first-party cookies are set on `executivefounders.com`:
+
+| Cookie | Purpose | Retention |
+|---|---|---|
+| `_ga` | Pseudonymous Google Analytics 4 client identifier | 13 months |
+| `_ga_511V0CTYES` | Per-property GA4 session state | 13 months |
+
+We have enabled IP-anonymisation, disabled Google Signals and disabled ad-personalisation signals on this property, so Google does not receive your full IP and does not use the data for advertising. You can withdraw consent at any time via **Cookie preferences** in the footer; choosing **Reject** instructs Google Analytics to delete the cookies and stop tracking.
+
+**External resources without cookies**
+
+- **Google Fonts.** We load the Inter typeface from `fonts.googleapis.com`. This causes your browser to make a request to Google, which receives your IP address as part of the normal request. No cookies are set on our domain by this request.
+
+If we add any other tracking technology in the future, this notice will be updated and we will request fresh consent before non-essential cookies are placed on your device.
 
 ## 8. Security
 

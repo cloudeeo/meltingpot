@@ -11,7 +11,7 @@ const privacyHref = localizePath('/privacy', locale);
 <aside
   class="cookie-banner"
   id="cookie-banner"
-  data-storage-key="ef-consent-v1"
+  data-storage-key="ef-consent-v2"
   role="region"
   aria-label={t.cookieBanner.title}
   hidden
@@ -25,55 +25,68 @@ const privacyHref = localizePath('/privacy', locale);
       </p>
     </div>
     <div class="cookie-banner-actions">
-      <button type="button" class="btn btn-primary" data-cookie-ack>
-        {t.cookieBanner.acknowledge}
+      <button type="button" class="btn btn-primary" data-cookie-accept>
+        {t.cookieBanner.accept}
+      </button>
+      <button type="button" class="btn btn-ghost" data-cookie-reject>
+        {t.cookieBanner.reject}
       </button>
       <button
         type="button"
         class="cookie-banner-close"
         aria-label={t.cookieBanner.closeAria}
-        data-cookie-ack
+        data-cookie-reject
       >×</button>
     </div>
   </div>
 </aside>
 
 <script>
-  // Minimal "transparency notice" controller. We do not place any
-  // non-essential cookies, so this is a one-time acknowledgement (not a
-  // categorised consent). Bump the storage key (`ef-consent-v1` →
-  // `ef-consent-v2`) when adding any tracking that requires fresh
-  // consent.
+  /* Consent controller — opt-in to analytics only.
+   *
+   * - Persists `{ analytics: boolean, ts }` under `ef-consent-v2`.
+   * - Emits `cookie:consent` with `{ analytics }` on every choice so the
+   *   GoogleAnalytics loader (and any future tag) can react via
+   *   gtag('consent','update', …).
+   * - "Close" (×) is treated as a reject — equivalent to declining.
+   * - Bump the storage key when adding any new tag category that needs
+   *   fresh consent. */
   (() => {
     const banner = document.getElementById('cookie-banner') as HTMLElement | null;
     if (!banner) return;
-    const KEY = banner.dataset.storageKey ?? 'ef-consent-v1';
+    const KEY = banner.dataset.storageKey ?? 'ef-consent-v2';
 
-    const hasAcknowledged = (): boolean => {
+    interface ConsentState {
+      analytics: boolean;
+      ts: string;
+    }
+
+    const readState = (): ConsentState | null => {
       try {
         const raw = window.localStorage.getItem(KEY);
-        return Boolean(raw && JSON.parse(raw)?.acknowledged);
+        if (!raw) return null;
+        const parsed = JSON.parse(raw) as Partial<ConsentState>;
+        if (typeof parsed?.analytics !== 'boolean') return null;
+        return { analytics: parsed.analytics, ts: parsed.ts ?? '' };
       } catch {
-        return false;
+        return null;
       }
     };
 
-    const acknowledge = (): void => {
+    const writeState = (analytics: boolean): void => {
+      const state: ConsentState = { analytics, ts: new Date().toISOString() };
       try {
-        window.localStorage.setItem(
-          KEY,
-          JSON.stringify({ acknowledged: true, ts: new Date().toISOString() }),
-        );
+        window.localStorage.setItem(KEY, JSON.stringify(state));
       } catch {
-        // localStorage may be disabled (private mode, quota); we still
-        // dismiss the visible banner so the user is not stuck with it.
+        // localStorage may be unavailable; we still hide the banner.
       }
-      hide();
+      document.dispatchEvent(
+        new CustomEvent('cookie:consent', { detail: { analytics } }),
+      );
     };
 
     const show = (): void => {
       banner.hidden = false;
-      // double rAF so the CSS transition has a frame to start from.
       requestAnimationFrame(() =>
         requestAnimationFrame(() => banner.classList.add('is-visible')),
       );
@@ -81,19 +94,25 @@ const privacyHref = localizePath('/privacy', locale);
 
     const hide = (): void => {
       banner.classList.remove('is-visible');
-      // wait for the transition before fully removing from a11y tree.
       window.setTimeout(() => {
         banner.hidden = true;
       }, 220);
     };
 
-    banner.querySelectorAll<HTMLElement>('[data-cookie-ack]').forEach((el) => {
-      el.addEventListener('click', acknowledge);
+    banner.querySelectorAll<HTMLElement>('[data-cookie-accept]').forEach((el) => {
+      el.addEventListener('click', () => {
+        writeState(true);
+        hide();
+      });
+    });
+    banner.querySelectorAll<HTMLElement>('[data-cookie-reject]').forEach((el) => {
+      el.addEventListener('click', () => {
+        writeState(false);
+        hide();
+      });
     });
 
-    // Allow re-opening the banner from anywhere on the page via
-    // a global custom event. The footer "Cookie preferences" link
-    // dispatches `cookie:open` when clicked.
+    // Footer "Cookie preferences" link reopens the banner.
     document.addEventListener('cookie:open', show);
     document.querySelectorAll<HTMLElement>('[data-cookie-trigger]').forEach((el) => {
       el.addEventListener('click', (e) => {
@@ -102,6 +121,7 @@ const privacyHref = localizePath('/privacy', locale);
       });
     });
 
-    if (!hasAcknowledged()) show();
+    // First visit — no stored choice yet, show the banner.
+    if (readState() === null) show();
   })();
 </script>
