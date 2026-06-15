@@ -33,7 +33,10 @@ export interface Seo {
 
 export function buildSeo(input: SeoInput): Seo {
   const t = getDictionary(input.locale ?? defaultLocale);
-  const title = input.title ? `${input.title} — ${SITE.name}` : `${SITE.name} — ${t.meta.tagline}`;
+  // Sub-pages: `<page> — Executive Founders`. Homepage: use the shorter
+  // `meta.seoTitleSuffix` so the rendered title stays under Google's
+  // ~580 px truncation threshold (~55–60 characters).
+  const title = input.title ? `${input.title} — ${SITE.name}` : `${SITE.name} | ${t.meta.seoTitleSuffix}`;
   const description = input.description ?? t.meta.description;
   const canonical = `${SITE.url}${input.path}`;
   const image = input.image ?? `${SITE.url}/og-default.png`;

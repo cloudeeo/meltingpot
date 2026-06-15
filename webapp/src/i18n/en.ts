@@ -9,6 +9,13 @@
 const en = {
   meta: {
     tagline: 'Governance · Strategic Advisory · Organisational Transformation',
+    /**
+     * Shorter, keyword-led suffix used in the homepage `<title>` tag.
+     * Kept distinct from `tagline` (which is displayed in the header
+     * subtitle) so the `<title>` stays under Google's ~580 px display
+     * width while the on-page brand chrome can stay verbose.
+     */
+    seoTitleSuffix: 'Governance & Strategic Advisory',
     description:
       'We help organisations, executives and leadership teams scale with clarity, structure and operational excellence.',
   },
@@ -359,8 +366,6 @@ const en = {
   },
 
   cards: {
-    readArticle: 'Read article →',
-    readEngagement: 'Read engagement →',
     caseStudyFallback: 'Case study',
   },
 

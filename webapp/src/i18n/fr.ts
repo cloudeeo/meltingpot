@@ -8,6 +8,7 @@ import type { Dictionary } from './en';
 const fr: Dictionary = {
   meta: {
     tagline: 'Gouvernance · Conseil stratégique · Transformation organisationnelle',
+    seoTitleSuffix: 'Gouvernance et conseil stratégique',
     description:
       "Nous aidons les organisations, les dirigeants et les équipes de direction à se développer avec clarté, structure et excellence opérationnelle.",
   },
@@ -358,8 +359,6 @@ const fr: Dictionary = {
   },
 
   cards: {
-    readArticle: "Lire l'article →",
-    readEngagement: 'Lire la mission →',
     caseStudyFallback: 'Étude de cas',
   },
 

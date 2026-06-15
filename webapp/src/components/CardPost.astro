@@ -2,7 +2,7 @@
 import { Image } from 'astro:assets';
 import { toIsoDate, truncate } from '~/lib/format';
 import { postHref } from '~/lib/content';
-import { formatDate, getDictionary, type Locale } from '~/i18n';
+import { formatDate, type Locale } from '~/i18n';
 import type { CollectionEntry } from 'astro:content';
 
 interface Props {
@@ -10,12 +10,11 @@ interface Props {
   locale: Locale;
 }
 const { post, locale } = Astro.props;
-const t = getDictionary(locale);
 const href = postHref(post, locale);
 ---
 <article class="card card-post">
   {post.data.cover && (
-    <a class="card-media" href={href} aria-hidden="true" tabindex="-1">
+    <a class="card-media" href={href} aria-label={post.data.title} tabindex="-1">
       <Image src={post.data.cover} alt="" width={800} height={500} loading="lazy" />
     </a>
   )}
@@ -25,6 +24,5 @@ const href = postHref(post, locale);
     </p>
     <h3 class="card-title"><a href={href}>{post.data.title}</a></h3>
     <p class="card-excerpt">{truncate(post.data.description, 160)}</p>
-    <p class="card-link"><a href={href}>{t.cards.readArticle}</a></p>
   </div>
 </article>
