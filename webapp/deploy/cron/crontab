@@ -1,0 +1,6 @@
+# Crontab for the executivefounders-cron container (busybox crond).
+# Installed by the container entrypoint with `crontab /scripts/crontab`.
+# Kept as a real file rather than inlined in docker-compose.prod.yml so it
+# does not have to survive YAML folding + Compose lexing + sh quoting.
+0 2 * * * /scripts/backup-db.sh >> /var/log/cron.log 2>&1
+*/5 * * * * /scripts/poll-drafts.sh >> /var/log/cron.log 2>&1

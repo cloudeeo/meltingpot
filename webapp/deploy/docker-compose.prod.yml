@@ -71,16 +71,17 @@ services:
     image: alpine:3.19
     container_name: executivefounders-cron
     restart: unless-stopped
-    entrypoint: /bin/sh
-    command: >
-      -c "
-        apk add --no-cache postgresql-client &&
-        printf '%s\n%s\n' \
-          '0 2 * * * /scripts/backup-db.sh >> /var/log/cron.log 2>&1' \
-          '*/5 * * * * /scripts/poll-drafts.sh >> /var/log/cron.log 2>&1' \
-          | crontab - &&
-        crond -f -l 2
-      "
+    # Exec-form entrypoint + a block-literal command: both are YAML lists, so
+    # Compose passes them through verbatim instead of re-lexing the string.
+    # The crontab itself lives in ./cron/crontab — building it inline here is
+    # what broke the container (the folded scalar mangled the continuations).
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        set -eu
+        apk add --no-cache postgresql-client
+        crontab /scripts/crontab
+        exec crond -f -l 2
     environment:
       PGPASSWORD: ${DB_PASSWORD}
       CRON_SECRET: ${CRON_SECRET:-}
