@@ -2,17 +2,26 @@
 set -euo pipefail
 
 #
-# Deploy executivefounders.com to AWS Lightsail
+# Deploy the full Executive Founders webapp (the one that used to live
+# at executivefounders.com) to a NEW domain — to be chosen.
 #
-# Builds the Docker image LOCALLY, transfers it to the server, loads it,
-# starts the stack with docker compose, then pushes the Prisma schema
-# via an SSH tunnel.
+# This is the same machinery as deploy.sh but every reference to the
+# domain comes from $MAIN_DOMAIN instead of being hard-coded. Set it in
+# the project's .env.production:
 #
-# Coexists with the manif app on the same Lightsail instance:
-#   - manif      : app port 3000, postgres 5432, network manif_internal
-#   - this app   : app port 3001, postgres 5433, network executivefounders_internal
+#   MAIN_DOMAIN=newdomain.example
 #
-# Usage: ./deploy.sh [--fresh]
+# Or override on the command line:
+#
+#   MAIN_DOMAIN=newdomain.example ./deploy-tbd.sh [--fresh]
+#
+# Before you run this:
+#   1. Pick the new domain and set MAIN_DOMAIN.
+#   2. Point ${MAIN_DOMAIN} and www.${MAIN_DOMAIN} DNS A-records at
+#      the Lightsail IP (63.181.76.197).
+#   3. Make sure ports 80/443 are open in the Lightsail firewall.
+#   4. The script will issue a fresh Let's Encrypt cert for the new
+#      domain on first run.
 #
 
 SERVER_IP="63.181.76.197"
@@ -23,12 +32,23 @@ APP_NAME="executivefounders"
 APP_DIR="/home/${SSH_USER}/${APP_NAME}"
 DEPLOY_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 PROJECT_DIR="$(cd "${DEPLOY_DIR}/.." && pwd)"
-DOMAIN="executivefounders.com"
 IMAGE_NAME="${APP_NAME}-app"
 LOCAL_TUNNEL_PORT="15433"
 
 SSH_CMD="ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ${SSH_USER}@${SERVER_IP}"
 SCP_CMD="scp -i ${SSH_KEY} -o StrictHostKeyChecking=no"
+
+# --- Resolve MAIN_DOMAIN --------------------------------------------------
+if [[ -z "${MAIN_DOMAIN:-}" && -f "${PROJECT_DIR}/.env.production" ]]; then
+    MAIN_DOMAIN=$(grep "^MAIN_DOMAIN=" "${PROJECT_DIR}/.env.production" | cut -d'=' -f2- | tr -d '"' | tr -d "'")
+fi
+if [[ -z "${MAIN_DOMAIN:-}" ]]; then
+    echo "ERROR: MAIN_DOMAIN is not set."
+    echo "       Add MAIN_DOMAIN=yourdomain.example to .env.production,"
+    echo "       or pass it inline: MAIN_DOMAIN=yourdomain.example ./deploy-tbd.sh"
+    exit 1
+fi
+DOMAIN="${MAIN_DOMAIN}"
 
 # --- Prerequisites --------------------------------------------------------
 if [[ ! -f "$SSH_KEY" ]]; then
@@ -48,9 +68,19 @@ if [[ "$FRESH" == "--fresh" ]]; then
     echo ">>> Fresh build requested (--no-cache)"
 fi
 
+# Render the nginx vhost from the canonical executivefounders.conf
+# template by sed-substituting the server_name lines. We keep the
+# original config readable and just produce a deploy-time variant.
+NGINX_TEMPLATE="${DEPLOY_DIR}/nginx/executivefounders.conf"
+NGINX_RENDERED="${DEPLOY_DIR}/nginx/${DOMAIN}.conf.rendered"
+sed -E \
+    -e "s/executivefounders\.com/${DOMAIN}/g" \
+    -e "s|/etc/letsencrypt/live/${DOMAIN}/|/etc/letsencrypt/live/${DOMAIN}/|g" \
+    "${NGINX_TEMPLATE}" > "${NGINX_RENDERED}"
+
 echo ""
 echo "============================================"
-echo "  Deploying ${APP_NAME}"
+echo "  Deploying ${APP_NAME} (TBD-domain build)"
 echo "  Server: ${SERVER_IP}"
 echo "  URL:    https://${DOMAIN}"
 echo "============================================"
@@ -77,7 +107,7 @@ cd "${PROJECT_DIR}"
 tar czf "/tmp/${APP_NAME}-config.tar.gz" \
     deploy/docker-compose.prod.yml \
     deploy/entrypoint.sh \
-    deploy/nginx/executivefounders.conf \
+    "deploy/nginx/${DOMAIN}.conf.rendered" \
     deploy/cron/ \
     prisma/schema.prisma
 echo "    Config package created"
@@ -93,7 +123,7 @@ echo ">>> Uploading to server..."
 $SCP_CMD "/tmp/${APP_NAME}-image.tar.gz"  "${SSH_USER}@${SERVER_IP}:/tmp/${APP_NAME}-image.tar.gz"
 $SCP_CMD "/tmp/${APP_NAME}-config.tar.gz" "${SSH_USER}@${SERVER_IP}:/tmp/${APP_NAME}-config.tar.gz"
 $SCP_CMD "${PROJECT_DIR}/.env.production" "${SSH_USER}@${SERVER_IP}:${APP_DIR}/deploy/.env.production"
-rm -f "/tmp/${APP_NAME}-image.tar.gz" "/tmp/${APP_NAME}-config.tar.gz"
+rm -f "/tmp/${APP_NAME}-image.tar.gz" "/tmp/${APP_NAME}-config.tar.gz" "${NGINX_RENDERED}"
 echo "    Upload complete"
 
 # --- Step 6: remote deploy ------------------------------------------------
@@ -192,10 +222,8 @@ fi
 
 cd "${APP_DIR}/deploy"
 
-# Stop existing containers for this app only.
 sudo docker compose -f docker-compose.prod.yml --env-file .env.production down 2>/dev/null || true
 
-# Load the freshly-uploaded image.
 echo "    Loading Docker image..."
 sudo docker load < /tmp/${APP_NAME}-image.tar.gz
 rm -f /tmp/${APP_NAME}-image.tar.gz
@@ -204,7 +232,6 @@ sudo docker image prune -f 2>/dev/null || true
 echo "    Starting containers..."
 sudo docker compose -f docker-compose.prod.yml --env-file .env.production up -d --force-recreate
 
-# Wait for Postgres.
 echo "    Waiting for PostgreSQL..."
 for i in $(seq 1 60); do
     if sudo docker compose -f docker-compose.prod.yml --env-file .env.production exec -T postgres pg_isready -U executivefounders > /dev/null 2>&1; then
@@ -219,7 +246,6 @@ for i in $(seq 1 60); do
     sleep 1
 done
 
-# Wait for app healthcheck.
 echo "    Waiting for app health check..."
 for i in $(seq 1 60); do
     if wget -qO- http://127.0.0.1:3001/api/health > /dev/null 2>&1; then
@@ -233,16 +259,12 @@ for i in $(seq 1 60); do
     sleep 1
 done
 
-# nginx + SSL
-echo "    Configuring nginx..."
+echo "    Configuring nginx for ${DOMAIN}..."
 
 CERT_PATH="/etc/letsencrypt/live/${DOMAIN}/fullchain.pem"
 
 if [ ! -f "${CERT_PATH}" ]; then
     echo "    No SSL certificate yet — obtaining one for ${DOMAIN}..."
-
-    # Stage a temporary HTTP-only vhost so certbot's HTTP-01 challenge has
-    # an nginx server block matching the hostname.
     sudo tee /etc/nginx/conf.d/${DOMAIN}.conf > /dev/null <<TMPNGINX
 server {
     listen 80;
@@ -254,7 +276,6 @@ TMPNGINX
 
     if ! sudo nginx -t; then
         echo "    ERROR: temporary nginx config failed to validate."
-        sudo nginx -t
         exit 1
     fi
     sudo systemctl reload nginx
@@ -265,17 +286,10 @@ TMPNGINX
             --email info@executivefounders.com; then
         echo ""
         echo "    ERROR: certbot failed to issue a certificate for ${DOMAIN}."
-        echo "    Common causes:"
-        echo "      - DNS for ${DOMAIN} / www.${DOMAIN} not pointing at this host"
-        echo "      - Port 80 blocked by the Lightsail firewall"
-        echo "      - Let's Encrypt rate limit hit (5 failures/hour/domain)"
-        echo ""
-        echo "    The temporary HTTP-only vhost has been left in place so you can"
-        echo "    investigate. Re-run this script after fixing the cause."
+        echo "    Check DNS, firewall and rate limits, then re-run."
         exit 1
     fi
 
-    # certbot succeeded — confirm the file actually appeared.
     if [ ! -f "${CERT_PATH}" ]; then
         echo "    ERROR: certbot reported success but ${CERT_PATH} is missing."
         exit 1
@@ -303,8 +317,6 @@ else
     fi
 fi
 
-# Refresh the Basic Auth htpasswd file for /admin/* from .env.production.
-# We use the `openssl passwd -apr1` form to avoid depending on apache2-utils.
 echo "    Refreshing admin Basic Auth credentials..."
 ADMIN_USER=$(grep "^ADMIN_BASIC_AUTH_USER=" "${APP_DIR}/deploy/.env.production" 2>/dev/null | cut -d'=' -f2- | tr -d '"' | tr -d "'")
 ADMIN_PASS=$(grep "^ADMIN_BASIC_AUTH_PASS=" "${APP_DIR}/deploy/.env.production" 2>/dev/null | cut -d'=' -f2- | tr -d '"' | tr -d "'")
@@ -316,14 +328,11 @@ else
     sudo chmod 640 /etc/nginx/htpasswd-ef-admin
 fi
 
-# Only install the real HTTPS config once we have a cert on disk. This
-# avoids leaving nginx in a broken state if certbot fails on a fresh box.
 echo "    Installing nginx vhost for ${DOMAIN}..."
-sudo cp ${APP_DIR}/deploy/nginx/executivefounders.conf /etc/nginx/conf.d/${DOMAIN}.conf
+sudo cp ${APP_DIR}/deploy/nginx/${DOMAIN}.conf.rendered /etc/nginx/conf.d/${DOMAIN}.conf
 
 if ! sudo nginx -t; then
     echo "    ERROR: production nginx config failed to validate."
-    sudo nginx -t
     exit 1
 fi
 sudo systemctl reload nginx
@@ -337,20 +346,17 @@ REMOTE_DEPLOY
 echo ""
 echo ">>> Syncing database schema via SSH tunnel..."
 
-# Tear down any previous tunnel on the same local port.
 lsof -ti tcp:${LOCAL_TUNNEL_PORT} 2>/dev/null | xargs -r kill 2>/dev/null || true
 
 ssh -i "${SSH_KEY}" -o StrictHostKeyChecking=no -f -N \
     -L ${LOCAL_TUNNEL_PORT}:127.0.0.1:5433 "${SSH_USER}@${SERVER_IP}"
 sleep 2
 
-# Source DB_PASSWORD from .env.production for the schema push.
 DB_PASSWORD=$(grep "^DB_PASSWORD=" "${PROJECT_DIR}/.env.production" | cut -d'=' -f2- | tr -d '"' | tr -d "'")
 if [[ -z "${DB_PASSWORD}" ]]; then
     echo "    WARNING: DB_PASSWORD not found in .env.production"
 fi
 
-# Build the URL piece-by-piece to keep secrets out of the source file.
 DB_SCHEME="postgresql"
 DB_USER="executivefounders"
 DB_HOST="127.0.0.1"
@@ -362,7 +368,6 @@ TUNNEL_DB_URL="${DB_SCHEME}://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${LOCAL_TUNNE
     DATABASE_URL="${TUNNEL_DB_URL}" pnpm prisma db push --accept-data-loss
 ) 2>&1 || echo "    WARNING: schema push failed"
 
-# Close the tunnel.
 lsof -ti tcp:${LOCAL_TUNNEL_PORT} 2>/dev/null | xargs -r kill 2>/dev/null || true
 echo "    Schema sync complete"
 
