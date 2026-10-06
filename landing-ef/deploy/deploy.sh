@@ -412,11 +412,28 @@ fi
 sudo systemctl reload nginx
 say "vhost: ${CONF_PATH} installed, nginx reloaded"
 
-# Our own smoke test.
-for d in ${DOMAINS}; do
-    code="$(curl -sk -o /dev/null -m 10 -w '%{http_code}' --resolve "${d}:443:127.0.0.1" "https://${d}/")" || true
-    say "https://${d}/ -> ${code:-ERR}"
+# Our own smoke test. `systemctl reload` returns before the new workers take
+# over, and until then requests for our names fall through to the default 443
+# server — another app, which happily answers 200. So a bare status code proves
+# nothing: the apex must serve our page, every other name must redirect to it.
+smoke_ok() {
+    local d out
+    for d in ${DOMAINS}; do
+        if [[ "${d}" == "${PRIMARY}" ]]; then
+            out="$(curl -sk -m 10 --resolve "${d}:443:127.0.0.1" "https://${d}/")" || return 1
+            grep -q '<title>Executive Founders' <<< "${out}" || return 1
+        else
+            out="$(curl -sk -o /dev/null -m 10 -w '%{http_code} %{redirect_url}' --resolve "${d}:443:127.0.0.1" "https://${d}/")" || return 1
+            [[ "${out}" == "301 https://${PRIMARY}/" ]] || return 1
+        fi
+    done
+}
+for attempt in 1 2 3 4 5 6 7 8 9 10; do
+    smoke_ok && break
+    [[ "${attempt}" == "10" ]] && die "smoke test failed: ${PRIMARY} does not serve the landing (or www does not redirect) — roll back with --rollback"
+    sleep 1
 done
+say "smoke test: ${PRIMARY} serves the landing, other names redirect (attempt ${attempt})"
 
 # Prune old releases (never the current one, never outside RELEASES_DIR).
 CURRENT="$(readlink "${DOCROOT}")"
