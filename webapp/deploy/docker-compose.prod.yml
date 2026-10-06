@@ -1,3 +1,10 @@
+# Pinned project name. Without it Compose names the project after the
+# directory (`deploy`), which is exactly the project name, service names
+# (app/postgres/cron) and volume name (deploy_postgres_data) of the comm app
+# on the shared commodintel box — a deploy there would recreate commodintel.com
+# and mount its database volume.
+name: executivefounders
+
 services:
   postgres:
     image: postgres:16-alpine

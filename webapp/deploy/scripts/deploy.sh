@@ -14,6 +14,12 @@ set -euo pipefail
 #
 # Usage: ./deploy.sh [--fresh]
 #
+# TODO(claude): this script targets the old EF box only. Before pointing it
+# at the shared commodintel box (54.216.156.219) it needs the same guards as
+# landing-ef/deploy/deploy.sh: pinned host key + hostname check, a free-port
+# check (3000-3004 are taken there), /etc/deploy-registry, and no package or
+# timer installs (that box already renews certs from cron).
+#
 
 SERVER_IP="63.181.76.197"
 SSH_KEY="$HOME/.ssh/LightsailDefaultKey-eu-central-1-ef-01.pem"
