@@ -1,0 +1,178 @@
+---
+import { Image } from 'astro:assets';
+import hero01 from '../assets/hero01.webp';
+import hero02 from '../assets/hero02.webp';
+import '../styles/landing.css';
+
+const SITE = {
+  name: 'Executive Founders',
+  url: 'https://executivefounders.com',
+  email: 'contact@executivefounders.com',
+  linkedin: 'https://www.linkedin.com/company/executive-founders',
+};
+
+const seo = {
+  title: 'Executive Founders | Governance & Strategic Advisory',
+  description:
+    'Executive Founders is a Swiss advisory firm helping organisations, executives and leadership teams scale with clarity, structure and operational excellence.',
+};
+
+const services = [
+  {
+    title: 'Strategic Advisory',
+    body: 'Guiding executives and leadership teams through inflection points — clarifying priorities, sharpening options and structuring decisions.',
+  },
+  {
+    title: 'Governance & Execution',
+    body: 'Designing the operating models, programme governance and PMO structures that turn strategy into reliable execution.',
+  },
+  {
+    title: 'AI Governance & Compliance',
+    body: 'Helping leadership govern AI adoption and meet emerging frameworks — ISO/IEC 42001, the EU AI Act and the NIST AI RMF.',
+  },
+];
+
+const mailto = `mailto:${SITE.email}?subject=${encodeURIComponent('Enquiry — Executive Founders')}`;
+const year = new Date().getFullYear();
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0F172A" />
+    <title>{seo.title}</title>
+    <meta name="description" content={seo.description} />
+    <link rel="canonical" href={SITE.url} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" />
+    </noscript>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:title" content={seo.title} />
+    <meta property="og:description" content={seo.description} />
+    <meta property="og:url" content={SITE.url} />
+    <meta property="og:image" content={`${SITE.url}/og-default.png`} />
+    <meta property="og:locale" content="en_GB" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={seo.title} />
+    <meta name="twitter:description" content={seo.description} />
+
+    <script type="application/ld+json" set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      name: SITE.name,
+      url: SITE.url,
+      logo: `${SITE.url}/logo-ef.svg`,
+      email: SITE.email,
+      sameAs: [SITE.linkedin],
+      contactPoint: {
+        '@type': 'ContactPoint',
+        contactType: 'business inquiries',
+        email: SITE.email,
+      },
+    })} />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a href="/" class="brand" aria-label={SITE.name}>
+          <span class="brand-mark" aria-hidden="true">ex.</span>
+          <span class="brand-text">
+            <strong>{SITE.name}</strong>
+            <small>Governance · Strategic Advisory · Organisational Transformation</small>
+          </span>
+        </a>
+        <a class="header-cta" href={mailto}>Get in touch</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="container">
+          <p class="eyebrow">Strategic advisory · Switzerland</p>
+          <h1 class="hero-title">{SITE.name} — Governance &amp; Strategic Advisory</h1>
+          <p class="hero-lede">
+            We help organisations, executives and leadership teams scale with clarity, structure and operational excellence.
+          </p>
+          <p class="hero-cta">
+            <a class="btn btn-primary" href={mailto}>Start a conversation</a>
+          </p>
+        </div>
+      </section>
+
+      <div class="image-band" aria-hidden="true">
+        <Image
+          src={hero01}
+          alt=""
+          widths={[640, 960, 1400, 2000]}
+          sizes="100vw"
+          loading="eager"
+          fetchpriority="high"
+        />
+      </div>
+
+      <section class="section section-light" aria-labelledby="what-we-do">
+        <div class="container">
+          <header class="section-head">
+            <h2 id="what-we-do">What we do</h2>
+            <p>
+              We operate at leadership level, not at task level — bridging strategy, governance and execution for organisations navigating growth and change.
+            </p>
+          </header>
+          <ul class="cards" role="list">
+            {services.map((s) => (
+              <li class="card">
+                <h3>{s.title}</h3>
+                <p>{s.body}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
+      <div class="image-band" aria-hidden="true">
+        <Image
+          src={hero02}
+          alt=""
+          widths={[640, 960, 1400, 2000]}
+          sizes="100vw"
+          loading="lazy"
+        />
+      </div>
+
+      <section class="section section-dark" aria-labelledby="closing-title">
+        <div class="container closing">
+          <h2 id="closing-title">Looking for a structured conversation about your organisation?</h2>
+          <p>
+            We work with leadership teams through medium and long-term engagements focused on sustainable organisational evolution.
+          </p>
+          <a class="btn" href={mailto}>Email us at {SITE.email}</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <p>&copy; {year} Executive Founders AG · Basel, Switzerland</p>
+        <p>
+          <a href={mailto}>{SITE.email}</a>
+          {' · '}
+          <a href={SITE.linkedin} target="_blank" rel="me noopener">LinkedIn</a>
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>
